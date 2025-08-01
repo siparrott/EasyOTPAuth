@@ -1,0 +1,10 @@
+version: '3'
+services:
+  otp-api:
+    image: yourorg/passwordless-auth:${VERSION:-latest}
+    env_file: .env
+    ports:
+      - "80:3000"
+  redis:
+    image: redis:7
+    command: ["redis-server", "--save", ""]

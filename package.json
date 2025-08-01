@@ -1,0 +1,32 @@
+{
+  "name": "passwordless-otp-auth",
+  "version": "1.0.0",
+  "description": "Minimal Express service for passwordless email OTP authentication.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "otp",
+    "passwordless",
+    "authentication",
+    "express"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.1",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.0.2",
+    "handlebars": "^4.7.8",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.9.8",
+    "redis": "^4.6.7",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

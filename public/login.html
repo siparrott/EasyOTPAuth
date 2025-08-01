@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - RapidAuth.pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/theme.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FFA500',
+                        'primary-dark': '#FF8C00',
+                        secondary: '#6B7280',
+                        accent: '#10B981'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 100%);
+        }
+        
+        .logo-img {
+            height: 40px;
+            width: auto;
+        }
+        
+        .btn-primary {
+            background: #FFA500;
+            color: white;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #FF8C00;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: 2px solid #E5E7EB;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            border-color: #FFA500;
+            transform: translateY(-2px);
+        }
+        
+        .demo-widget {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #FFA500;
+            box-shadow: 0 0 0 4px rgba(255, 165, 0, 0.1);
+        }
+        
+        .success-message {
+            background: #ECFDF5;
+            color: #10B981;
+            padding: 16px 20px;
+            border-radius: 8px;
+            border: 1px solid #10B981;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .error-message {
+            background: #FEF2F2;
+            color: #EF4444;
+            padding: 16px 20px;
+            border-radius: 8px;
+            border: 1px solid #EF4444;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        .decorative-circle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.05;
+        }
+        
+        .circle-1 {
+            background: #FFA500;
+            width: 200px;
+            height: 200px;
+            top: 10%;
+            left: 5%;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .circle-2 {
+            background: #10B981;
+            width: 150px;
+            height: 150px;
+            top: 20%;
+            right: 10%;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+        
+        .circle-3 {
+            background: #3B82F6;
+            width: 100px;
+            height: 100px;
+            bottom: 15%;
+            left: 15%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) translateX(0px);
+            }
+            25% {
+                transform: translateY(-30px) translateX(20px);
+            }
+            50% {
+                transform: translateY(-15px) translateX(-25px);
+            }
+            75% {
+                transform: translateY(-35px) translateX(10px);
+            }
+        }
+        
+        .back-link {
+            color: #6B7280;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+        
+        .back-link:hover {
+            color: #FFA500;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="/">
+                        <img src="https://i.postimg.cc/Qx8C6tgQ/Chat-GPT-Image-Jun-19-2025-02-30-24-PM.png" alt="RapidAuth.pro" class="logo-img">
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/#demo" class="text-gray-600 hover:text-gray-900">Try Demo</a>
+                    <a href="/#features" class="text-gray-600 hover:text-gray-900">Features</a>
+                    <a href="/public/info.html" class="text-gray-600 hover:text-gray-900">Info</a>
+                    <a href="/#pricing" class="text-gray-600 hover:text-gray-900">Pricing</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <section class="gradient-bg min-h-screen py-20 relative overflow-hidden">
+        <!-- Decorative circles -->
+        <div class="decorative-circle circle-1"></div>
+        <div class="decorative-circle circle-2"></div>
+        <div class="decorative-circle circle-3"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+            <!-- Back Link -->
+            <div class="mb-8">
+                <a href="/" class="back-link">
+                    ← Back to Homepage
+                </a>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- Left Column - Information -->
+                <div class="space-y-8">
+                    <div>
+                        <h1 class="text-4xl md:text-5xl font-black text-gray-900 mb-6">
+                            Welcome to <span class="text-primary">RapidAuth.pro</span>
+                        </h1>
+                        <p class="text-xl text-gray-600 mb-8">
+                            Experience the future of authentication. No passwords, no friction, just seamless access to your account.
+                        </p>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-primary text-white rounded-full p-3 text-xl">⚡</div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900 mb-2">Lightning Fast</h3>
+                                <p class="text-gray-600">Users authenticate in under 10 seconds. No typing complex passwords, no forgotten credentials.</p>
+                                <div class="text-sm text-green-600 font-semibold mt-2">✓ 3x faster than traditional login</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start gap-4">
+                            <div class="bg-primary text-white rounded-full p-3 text-xl">🔒</div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900 mb-2">Enterprise Secure</h3>
+                                <p class="text-gray-600">Bank-level security with JWT tokens, email verification, and enterprise compliance built-in.</p>
+                                <div class="text-sm text-green-600 font-semibold mt-2">✓ SOC 2 & GDPR compliant</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Column - Demo Widget (Exact copy from homepage) -->
+                <div class="flex justify-center">
+                    <div class="demo-widget">
+                        <div class="text-center mb-8">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Try our live demo!</h3>
+                            <p class="text-gray-600">Enter your email to experience passwordless auth</p>
+                        </div>
+                        
+                        <!-- Demo Form -->
+                        <div id="demo-form">
+                            <div class="mb-6">
+                                <input 
+                                    type="email" 
+                                    id="demo-email" 
+                                    placeholder="Enter your email address"
+                                    class="input-field"
+                                    required
+                                >
+                            </div>
+                            <button 
+                                id="demo-submit" 
+                                class="btn-primary w-full text-lg py-4 mb-4"
+                            >
+                                Send Magic Link ✨
+                            </button>
+                            <p class="text-sm text-gray-500 text-center">
+                                No password required. Check your email for instant access.
+                            </p>
+                        </div>
+                        
+                        <!-- Success State -->
+                        <div id="demo-success" class="hidden">
+                            <div class="success-message mb-6">
+                                ✅ Magic link sent! Check your email.
+                            </div>
+                            <div class="mb-6">
+                                <input 
+                                    type="text" 
+                                    id="demo-code" 
+                                    placeholder="Enter 6-digit code"
+                                    class="input-field text-center text-2xl tracking-widest"
+                                    maxlength="6"
+                                >
+                            </div>
+                            <button 
+                                id="demo-verify" 
+                                class="btn-primary w-full text-lg py-4 mb-4"
+                            >
+                                Verify & Sign In 🔐
+                            </button>
+                            <button 
+                                id="demo-resend" 
+                                class="btn-secondary w-full py-3"
+                            >
+                                Resend Code
+                            </button>
+                        </div>
+                        
+                        <!-- Error State -->
+                        <div id="demo-error" class="hidden">
+                            <div class="error-message mb-6">
+                                <span id="error-text">Something went wrong. Please try again.</span>
+                            </div>
+                            <button 
+                                id="demo-retry" 
+                                class="btn-secondary w-full py-3"
+                            >
+                                Try Again
+                            </button>
+                        </div>
+                        
+                        <!-- Final Success -->
+                        <div id="demo-complete" class="hidden text-center">
+                            <div class="text-6xl mb-4">🎉</div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Welcome!</h3>
+                            <p class="text-gray-600 mb-6">You're now signed in. That's how easy passwordless auth can be!</p>
+                            <button 
+                                id="demo-reset" 
+                                class="btn-secondary w-full py-3"
+                            >
+                                Try Again
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JavaScript (Exact copy from homepage) -->
+    <script>
+        // Demo widget functionality
+        const demoForm = document.getElementById('demo-form');
+        const demoSuccess = document.getElementById('demo-success');
+        const demoError = document.getElementById('demo-error');
+        const demoComplete = document.getElementById('demo-complete');
+        
+        const emailInput = document.getElementById('demo-email');
+        const codeInput = document.getElementById('demo-code');
+        const submitBtn = document.getElementById('demo-submit');
+        const verifyBtn = document.getElementById('demo-verify');
+        const resendBtn = document.getElementById('demo-resend');
+        const retryBtn = document.getElementById('demo-retry');
+        const resetBtn = document.getElementById('demo-reset');
+        
+        const errorText = document.getElementById('error-text');
+        
+        // State management
+        let currentState = 'form'; // form, success, error, complete
+        let isLoading = false;
+        
+        function showState(state) {
+            // Hide all states
+            demoForm.classList.add('hidden');
+            demoSuccess.classList.add('hidden');
+            demoError.classList.add('hidden');
+            demoComplete.classList.add('hidden');
+            
+            // Show current state
+            switch(state) {
+                case 'form':
+                    demoForm.classList.remove('hidden');
+                    break;
+                case 'success':
+                    demoSuccess.classList.remove('hidden');
+                    break;
+                case 'error':
+                    demoError.classList.remove('hidden');
+                    break;
+                case 'complete':
+                    demoComplete.classList.remove('hidden');
+                    break;
+            }
+            currentState = state;
+        }
+        
+        function setLoading(loading) {
+            isLoading = loading;
+            const widget = document.querySelector('.demo-widget');
+            if (loading) {
+                widget.classList.add('loading');
+            } else {
+                widget.classList.remove('loading');
+            }
+        }
+        
+        function showError(message) {
+            errorText.textContent = message;
+            showState('error');
+        }
+        
+        // API calls
+        async function requestCode(email) {
+            try {
+                const response = await fetch('/auth/request-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to send code');
+                }
+                
+                return data;
+            } catch (error) {
+                throw error;
+            }
+        }
+        
+        async function verifyCode(email, code) {
+            try {
+                const response = await fetch('/auth/verify-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, code })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Invalid code');
+                }
+                
+                return data;
+            } catch (error) {
+                throw error;
+            }
+        }
+        
+        // Event handlers
+        submitBtn.addEventListener('click', async () => {
+            if (isLoading) return;
+            
+            const email = emailInput.value.trim();
+            if (!email) {
+                showError('Please enter your email address');
+                return;
+            }
+            
+            if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+                showError('Please enter a valid email address');
+                return;
+            }
+            
+            setLoading(true);
+            
+            try {
+                await requestCode(email);
+                showState('success');
+                codeInput.focus();
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        });
+        
+        verifyBtn.addEventListener('click', async () => {
+            if (isLoading) return;
+            
+            const email = emailInput.value.trim();
+            const code = codeInput.value.trim();
+            
+            if (!code || code.length !== 6) {
+                showError('Please enter the 6-digit code');
+                return;
+            }
+            
+            setLoading(true);
+            
+            try {
+                await verifyCode(email, code);
+                showState('complete');
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        });
+        
+        resendBtn.addEventListener('click', async () => {
+            if (isLoading) return;
+            
+            const email = emailInput.value.trim();
+            setLoading(true);
+            
+            try {
+                await requestCode(email);
+                // Stay on success state but clear code input
+                codeInput.value = '';
+                codeInput.focus();
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        });
+        
+        retryBtn.addEventListener('click', () => {
+            showState('form');
+            emailInput.focus();
+        });
+        
+        resetBtn.addEventListener('click', () => {
+            emailInput.value = '';
+            codeInput.value = '';
+            showState('form');
+            emailInput.focus();
+        });
+        
+        // Enter key handling
+        emailInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitBtn.click();
+            }
+        });
+        
+        codeInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                verifyBtn.click();
+            }
+        });
+        
+        // Auto-format code input
+        codeInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 6) {
+                value = value.slice(0, 6);
+            }
+            e.target.value = value;
+            
+            // Auto-verify when 6 digits entered
+            if (value.length === 6) {
+                setTimeout(() => verifyBtn.click(), 100);
+            }
+        });
+        
+        // Initialize
+        emailInput.focus();
+    </script>
+</body>
+</html>

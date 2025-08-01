@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RapidAuth.pro - Enterprise Passwordless Authentication</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/theme.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FFA500',
+                        'primary-dark': '#FF8C00',
+                        secondary: '#6B7280',
+                        accent: '#10B981'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 100%);
+        }
+        
+        .logo-img {
+            height: 40px;
+            width: auto;
+        }
+        
+        .btn-primary {
+            background: #FFA500;
+            color: white;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #FF8C00;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: 2px solid #E5E7EB;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            border-color: #FFA500;
+            transform: translateY(-2px);
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-widget {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            width: 100%;
+            border: 1px solid #F3F4F6;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #FFA500;
+            box-shadow: 0 0 0 4px rgba(255, 165, 0, 0.1);
+        }
+        
+        .success-message {
+            background: #ECFDF5;
+            color: #10B981;
+            padding: 16px 20px;
+            border-radius: 8px;
+            border: 1px solid #10B981;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .error-message {
+            background: #FEF2F2;
+            color: #EF4444;
+            padding: 16px 20px;
+            border-radius: 8px;
+            border: 1px solid #EF4444;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: 900;
+            color: #374151;
+            display: block;
+            line-height: 1;
+        }
+        
+        .stat-label {
+            color: #6B7280;
+            font-weight: 600;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 14px;
+        }
+        
+        .pricing-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            border: 2px solid #E5E7EB;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .pricing-card.featured {
+            border-color: #FFA500;
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 165, 0, 0.2);
+        }
+        
+        .pricing-card.featured::before {
+            content: 'Most Popular';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #FFA500;
+            color: white;
+            padding: 8px 24px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        
+        .comparison-table {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 16px 24px;
+            text-align: left;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        
+        .comparison-table th {
+            background: #F9FAFB;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .comparison-table .traditional {
+            background: #FEF2F2;
+        }
+        
+        .comparison-table .rapidauth {
+            background: #F0FDF4;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #F0FDF4;
+            color: #16A34A;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 32px;
+        }
+
+        .hero-badge::before {
+            content: '●';
+            color: #16A34A;
+        }
+
+        .decorative-circle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+        }
+
+        .circle-yellow {
+            background: #FFA500;
+            width: 120px;
+            height: 120px;
+            top: 20%;
+            left: 10%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .circle-blue {
+            background: #3B82F6;
+            width: 80px;
+            height: 80px;
+            top: 15%;
+            right: 15%;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        .circle-green {
+            background: #10B981;
+            width: 60px;
+            height: 60px;
+            bottom: 30%;
+            left: 5%;
+            animation: float 7s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) translateX(0px);
+            }
+            25% {
+                transform: translateY(-20px) translateX(10px);
+            }
+            50% {
+                transform: translateY(-10px) translateX(-15px);
+            }
+            75% {
+                transform: translateY(-25px) translateX(5px);
+            }
+        }
+
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #6B7280;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .trust-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .trust-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .trust-dot:nth-child(1) { background: #3B82F6; }
+        .trust-dot:nth-child(2) { background: #10B981; }
+        .trust-dot:nth-child(3) { background: #F59E0B; }
+
+        .typewriter {
+            overflow: hidden;
+            border-right: 3px solid #FFA500;
+            white-space: nowrap;
+            animation: typing 2s steps(15, end), blink-caret 1s step-end infinite;
+        }
+
+        @keyframes typing {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes blink-caret {
+            from, to {
+                border-color: transparent;
+            }
+            50% {
+                border-color: #FFA500;
+            }
+        }
+
+        /* Demo Widget Specific Styles */
+        .demo-section {
+            background: #F8FAFC;
+        }
+
+        .demo-widget-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E7EB;
+            max-width: 420px;
+            width: 100%;
+        }
+
+        .demo-widget-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .demo-widget-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .demo-widget-subtitle {
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .demo-input-group {
+            margin-bottom: 24px;
+        }
+
+        .demo-input-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .demo-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            background: #FAFAFA;
+        }
+
+        .demo-input:focus {
+            outline: none;
+            border-color: #FFA500;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.1);
+        }
+
+        .demo-input-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .demo-input-code {
+            flex: 1;
+            text-align: center;
+            font-size: 18px;
+            letter-spacing: 2px;
+        }
+
+        .demo-get-code-btn {
+            background: #F3F4F6;
+            color: #6B7280;
+            border: 2px solid #E5E7EB;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .demo-get-code-btn:hover {
+            background: #E5E7EB;
+            border-color: #D1D5DB;
+        }
+
+        .demo-login-btn {
+            width: 100%;
+            background: #FFA500;
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 16px;
+        }
+
+        .demo-login-btn:hover {
+            background: #FF8C00;
+        }
+
+        .demo-footer-text {
+            text-align: center;
+            font-size: 12px;
+            color: #9CA3AF;
+        }
+
+        .demo-step-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .demo-step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #E5E7EB;
+            transition: all 0.2s ease;
+        }
+
+        .demo-step-dot.active {
+            background: #FFA500;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <img src="https://i.postimg.cc/Qx8C6tgQ/Chat-GPT-Image-Jun-19-2025-02-30-24-PM.png" alt="RapidAuth.pro" class="logo-img">
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#demo" class="text-gray-600 hover:text-gray-900">Try Demo</a>
+                    <a href="#features" class="text-gray-600 hover:text-gray-900">Features</a>
+                    <a href="/public/info.html" class="text-gray-600 hover:text-gray-900">Info</a>
+                    <a href="#pricing" class="text-gray-600 hover:text-gray-900">Pricing</a>
+                    <a href="/public/login.html" class="btn-primary">
+                        Get Started
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg py-20 relative overflow-hidden">
+        <!-- Decorative circles -->
+        <div class="decorative-circle circle-yellow"></div>
+        <div class="decorative-circle circle-blue"></div>
+        <div class="decorative-circle circle-green"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <div class="hero-badge">
+                    Enterprise-grade passwordless authentication
+                </div>
+                
+                <h1 class="text-5xl md:text-6xl font-black text-gray-900 mb-6">
+                    Stop Losing Clients at<br>
+                    <span class="text-primary typewriter" id="typewriter-text">the Login Page</span>
+                </h1>
+                
+                <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                    Enterprise passwordless authentication that converts 3x better than<br>
+                    traditional login flows.<br>
+                    <span class="font-semibold">No passwords. No friction. No lost revenue.</span>
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+                    <a href="/public/login.html" class="btn-primary text-lg px-8 py-4 flex items-center gap-2">
+                        <span>⚡</span> Try Live Demo
+                    </a>
+                    <div class="trust-badge">
+                        <div class="trust-dots">
+                            <div class="trust-dot"></div>
+                            <div class="trust-dot"></div>
+                            <div class="trust-dot"></div>
+                        </div>
+                        <span>Trusted by 10,000+ developers</span>
+                    </div>
+                </div>
+                
+                <!-- Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
+                    <div class="text-center">
+                        <span class="stat-number">3x</span>
+                        <span class="stat-label">Higher Conversion</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="stat-number">85%</span>
+                        <span class="stat-label">Less Support Tickets</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="stat-number">2min</span>
+                        <span class="stat-label">Setup Time</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-gray-900 mb-8">
+                    The $2.1 Trillion Problem
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Every year, businesses lose $2.1 trillion in revenue due to poor authentication UX. 
+                    Your login form is where customers abandon their journey.
+                </p>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Traditional Login Problems -->
+                <div class="bg-red-50 border-l-4 border-red-400 p-8 rounded-lg">
+                    <div class="flex items-center mb-6">
+                        <div class="text-red-400 text-2xl mr-4">❌</div>
+                        <h3 class="text-2xl font-bold text-gray-900">What Happens With Traditional Login</h3>
+                    </div>
+                    <ul class="space-y-4 text-gray-700">
+                        <li class="flex items-start">
+                            <span class="text-red-400 mr-3">•</span>
+                            77% of users abandon signup due to password complexity
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-400 mr-3">•</span>
+                            Average 4.2 failed login attempts per user
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-400 mr-3">•</span>
+                            Password reset emails have 23% open rates
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-400 mr-3">•</span>
+                            Support tickets cost $15 each to resolve
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- RapidAuth Solution -->
+                <div class="bg-green-50 border-l-4 border-green-400 p-8 rounded-lg">
+                    <div class="flex items-center mb-6">
+                        <div class="text-green-400 text-2xl mr-4">✅</div>
+                        <h3 class="text-2xl font-bold text-gray-900">What Happens With RapidAuth.pro</h3>
+                    </div>
+                    <ul class="space-y-4 text-gray-700">
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-3">•</span>
+                            One-click email authentication
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-3">•</span>
+                            No passwords to remember or type
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-3">•</span>
+                            98% email delivery success rate
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-3">•</span>
+                            Zero password-related support tickets
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="py-20 demo-section">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-gray-900 mb-8">
+                    Experience the Future of Login
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    See how simple authentication can be when you remove the friction. No passwords, no complexity, just results.
+                </p>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- Left Column - Benefits -->
+                <div class="space-y-8">
+                    <div class="flex items-start gap-6">
+                        <div class="bg-primary text-white rounded-full p-4 text-2xl">⚡</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Lightning Fast</h3>
+                            <p class="text-gray-600">Users authenticate in under 10 seconds. No typing complex passwords, no forgotten credentials.</p>
+                            <div class="text-sm text-green-600 font-semibold mt-2">✓ 3x faster than traditional login</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-6">
+                        <div class="bg-primary text-white rounded-full p-4 text-2xl">🔒</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Enterprise Secure</h3>
+                            <p class="text-gray-600">Bank-level security with JWT tokens, email verification, and enterprise compliance built-in.</p>
+                            <div class="text-sm text-green-600 font-semibold mt-2">✓ SOC 2 & GDPR compliant</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Column - Demo Widget -->
+                <div class="flex justify-center">
+                    <div class="demo-widget-container">
+                        <div class="demo-widget-header">
+                            <div class="demo-widget-title">Enter your email to experience passwordless auth</div>
+                        </div>
+                        
+                        <div class="demo-step-indicators">
+                            <div class="demo-step-dot active"></div>
+                            <div class="demo-step-dot"></div>
+                            <div class="demo-step-dot"></div>
+                        </div>
+                        
+                        <!-- Demo Form -->
+                        <div id="demo-form">
+                            <div class="demo-input-group">
+                                <input 
+                                    type="email" 
+                                    id="demo-email" 
+                                    placeholder="Enter your email address"
+                                    class="demo-input"
+                                    required
+                                >
+                            </div>
+                            
+                            <div class="demo-input-group">
+                                <div class="demo-input-row">
+                                    <input 
+                                        type="text" 
+                                        id="demo-code" 
+                                        placeholder="Enter verification code"
+                                        class="demo-input demo-input-code"
+                                        maxlength="6"
+                                    >
+                                    <button 
+                                        id="demo-get-code" 
+                                        class="demo-get-code-btn"
+                                    >
+                                        Get Code
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <button 
+                                id="demo-login" 
+                                class="demo-login-btn"
+                            >
+                                Login
+                            </button>
+                            
+                            <div class="demo-footer-text">
+                                No password required • Secure by design
+                            </div>
+                        </div>
+                        
+                        <!-- Success State -->
+                        <div id="demo-success" class="hidden">
+                            <div class="success-message mb-6">
+                                ✅ Code sent! Check your email.
+                            </div>
+                            <div class="demo-input-group">
+                                <div class="demo-input-row">
+                                    <input 
+                                        type="text" 
+                                        id="demo-code-verify" 
+                                        placeholder="Enter 6-digit code"
+                                        class="demo-input demo-input-code"
+                                        maxlength="6"
+                                    >
+                                    <button 
+                                        id="demo-resend" 
+                                        class="demo-get-code-btn"
+                                    >
+                                        Resend
+                                    </button>
+                                </div>
+                            </div>
+                            <button 
+                                id="demo-verify" 
+                                class="demo-login-btn"
+                            >
+                                Verify & Login
+                            </button>
+                        </div>
+                        
+                        <!-- Error State -->
+                        <div id="demo-error" class="hidden">
+                            <div class="error-message mb-6">
+                                <span id="error-text">Something went wrong. Please try again.</span>
+                            </div>
+                            <button 
+                                id="demo-retry" 
+                                class="demo-login-btn"
+                            >
+                                Try Again
+                            </button>
+                        </div>
+                        
+                        <!-- Final Success -->
+                        <div id="demo-complete" class="hidden text-center">
+                            <div class="text-6xl mb-4">🎉</div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Welcome!</h3>
+                            <p class="text-gray-600 mb-6">You're now signed in. That's how easy passwordless auth can be!</p>
+                            <button 
+                                id="demo-reset" 
+                                class="demo-login-btn"
+                            >
+                                Try Again
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-gray-900 mb-8">
+                    🔍 Real Password Friction Statistics
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    The numbers don't lie. Password friction is costing your business real money. Here's the data that proves it.
+                </p>
+            </div>
+            
+            <!-- Key Stats -->
+            <div class="grid md:grid-cols-4 gap-8 mb-16">
+                <div class="text-center bg-red-50 p-8 rounded-lg">
+                    <div class="text-4xl font-black text-red-500 mb-2">77%</div>
+                    <div class="text-sm text-gray-600 font-semibold">Users abandon signup due to password complexity</div>
+                </div>
+                <div class="text-center bg-orange-50 p-8 rounded-lg">
+                    <div class="text-4xl font-black text-orange-500 mb-2">46%</div>
+                    <div class="text-sm text-gray-600 font-semibold">Forget passwords within 30 days</div>
+                </div>
+                <div class="text-center bg-red-50 p-8 rounded-lg">
+                    <div class="text-4xl font-black text-red-500 mb-2">28.6%</div>
+                    <div class="text-sm text-gray-600 font-semibold">Password reset email open rate</div>
+                </div>
+                <div class="text-center bg-green-50 p-8 rounded-lg">
+                    <div class="text-4xl font-black text-green-500 mb-2">3x</div>
+                    <div class="text-sm text-gray-600 font-semibold">Higher conversion with passwordless</div>
+                </div>
+            </div>
+
+            <!-- Comparison Table -->
+            <div class="comparison-table">
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            <th class="text-left">Challenge</th>
+                            <th class="text-center traditional">Traditional Passwords & Login</th>
+                            <th class="text-center rapidauth">RapidAuth.pro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-semibold">Password Requirements</td>
+                            <td class="text-center traditional">8+ chars, symbols, numbers, caps</td>
+                            <td class="text-center rapidauth">✅ No passwords needed</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">User Experience</td>
+                            <td class="text-center traditional">Complex, frustrating, slow</td>
+                            <td class="text-center rapidauth">✅ One-click authentication</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Forgot Password Flow</td>
+                            <td class="text-center traditional">Multi-step, 28% email open rate</td>
+                            <td class="text-center rapidauth">✅ No forgot password needed</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Support Tickets</td>
+                            <td class="text-center traditional">$15 per password reset ticket</td>
+                            <td class="text-center rapidauth">✅ Zero password tickets</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Conversion Rate</td>
+                            <td class="text-center traditional">23% abandon at signup</td>
+                            <td class="text-center rapidauth">✅ 3x higher completion</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Security Breaches</td>
+                            <td class="text-center traditional">81% due to weak passwords</td>
+                            <td class="text-center rapidauth">✅ No stored passwords</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- What This Means -->
+            <div class="mt-16 bg-primary text-white rounded-2xl p-12 text-center">
+                <h3 class="text-3xl font-bold mb-6">💡 What This Means for Your Business</h3>
+                <div class="grid md:grid-cols-3 gap-8 text-left">
+                    <div>
+                        <h4 class="font-bold mb-2">Revenue</h4>
+                        <p class="text-sm opacity-90">If you have 1,000 signups/month and lose 23% to password friction, that's 230 lost customers monthly.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-2">Support</h4>
+                        <p class="text-sm opacity-90">Password reset tickets cost $15 each. 100 tickets/month = $1,500 in support costs.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-2">Reputation</h4>
+                        <p class="text-sm opacity-90">Poor login experience creates negative first impressions that impact brand perception.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="py-20 bg-primary text-white">
+        <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+            <h2 class="text-4xl font-black mb-8">
+                Stop Losing Revenue to Password Friction
+            </h2>
+            <p class="text-xl mb-8 opacity-90">
+                Every day you delay implementing passwordless authentication is another day of lost customers, frustrated users, and expensive support tickets. The solution is simpler than you think.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/public/login.html" class="bg-white text-primary font-bold py-4 px-8 rounded-lg hover:bg-gray-100 transition-all">
+                    🚀 Try Free Demo
+                </a>
+                <a href="#pricing" class="border-2 border-white text-white font-bold py-4 px-8 rounded-lg hover:bg-white hover:text-primary transition-all">
+                    📊 View Pricing
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enterprise Features -->
+    <section id="features" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-gray-900 mb-8">
+                    Built for Enterprise Scale
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Everything you need for secure, scalable, and friendly authentication
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="feature-card">
+                    <div class="text-4xl mb-6">🔐</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Enterprise Security</h3>
+                    <p class="text-gray-600">SOC 2 compliant with bank-level encryption, JWT tokens, and enterprise-grade infrastructure.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="text-4xl mb-6">⚡</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Lightning Performance</h3>
+                    <p class="text-gray-600">Sub-100ms response times globally with 99.9% uptime SLA and intelligent email routing.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="text-4xl mb-6">🎨</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">White-Label Ready</h3>
+                    <p class="text-gray-600">Complete customization with your branding, colors, and domain. Looks like it's built in-house.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="text-4xl mb-6">📊</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Advanced Analytics</h3>
+                    <p class="text-gray-600">Real-time insights into user flows, conversion rates, and authentication patterns.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="text-4xl mb-6">🔗</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Flexible Integration</h3>
+                    <p class="text-gray-600">Works with React, Vue, Angular, WordPress, and any website. 5-minute setup guaranteed.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="text-4xl mb-6">🛡️</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Fraud Protection</h3>
+                    <p class="text-gray-600">Built-in rate limiting, bot detection, and abuse prevention to keep your platform secure.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-gray-900 mb-8">
+                    Simple, Transparent Pricing
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    No hidden fees. No surprises. Scale as you grow with plans that make sense.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- Starter -->
+                <div class="pricing-card">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Starter</h3>
+                    <div class="mb-6">
+                        <span class="text-4xl font-black text-gray-900">€49</span>
+                        <span class="text-gray-600">/month</span>
+                    </div>
+                    <ul class="space-y-3 mb-8 text-gray-600">
+                        <li class="flex items-center gap-3">
+                            <span class="text-green-500">✓</span>
+                            Up to 1,000 authentications
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-green-500">✓</span>
+                            Email support
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-green-500">✓</span>
+                            Basic analytics
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-green-500">✓</span>
+                            Standard integrations
+                        </li>
+                    </ul>
+                    <a href="/public/login.html" class="btn-secondary w-full py-4 block text-center">
+                        Get Started
+                    </a>
+                </div>
+                
+                <!-- Professional -->
+                <div class="pricing-card featured">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Professional</h3>
+                    <div class="mb-6">
+                        <span class="text-4xl font-black text-gray-900">€149</span>
+                        <span class="text-gray-600">/month</span>
+                    </div>
+                    <ul class="space-y-3 mb-8 text-gray-600">
+                        <li class="flex items-center gap-3">
+                            <span class="text-green-500">✓</span>
+                            Up to 10,000 authentications
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-green-500">✓</span>
+                            Priority support
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-green-500">✓</span>
+                            Advanced analytics
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-green-500">✓</span>
+                            Custom branding
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-green-500">✓</span>
+                            99.9% uptime SLA
+                        </li>
+                    </ul>
+                    <a href="/public/login.html" class="btn-primary w-full py-4 block text-center">
+                        Start Professional
+                    </a>
+                </div>
+                
+                <!-- Enterprise -->
+                <div class="pricing-card">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Enterprise</h3>
+                    <div class="mb-6">
+                        <span class="text-4xl font-black text-gray-900">Custom</span>
+                    </div>
+                    <ul class="space-y-3 mb-8 text-gray-600">
+                        <li class="flex items-center gap-3">
+                            <span class="text-green-500">✓</span>
+                            Unlimited authentications
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-green-500">✓</span>
+                            Dedicated support
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-green-500">✓</span>
+                            Custom integrations
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-green-500">✓</span>
+                            On-premise deployment
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-green-500">✓</span>
+                            99.99% uptime SLA
+                        </li>
+                    </ul>
+                    <a href="/public/login.html" class="btn-secondary w-full py-4 block text-center">
+                        Contact Sales
+                    </a>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <p class="text-gray-600">
+                    🔍 Still have questions? <a href="/public/login.html" class="text-primary font-semibold">View detailed pricing breakdown</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center mb-6">
+                    <img src="https://i.postimg.cc/Qx8C6tgQ/Chat-GPT-Image-Jun-19-2025-02-30-24-PM.png" alt="RapidAuth.pro" class="logo-img">
+                </div>
+                <p class="text-gray-400 mb-6 text-lg">
+                    Enterprise passwordless authentication that actually works.
+                </p>
+                <div class="flex justify-center gap-8 mb-8">
+                    <a href="#features" class="text-gray-400 hover:text-white transition-colors">Features</a>
+                    <a href="#pricing" class="text-gray-400 hover:text-white transition-colors">Pricing</a>
+                    <a href="#demo" class="text-gray-400 hover:text-white transition-colors">Demo</a>
+                </div>
+                <p class="text-sm text-gray-500">
+                    © 2025 RapidAuth.pro. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Typewriter effect for "the Login Page"
+        function startTypewriter() {
+            const element = document.getElementById('typewriter-text');
+            const text = 'the Login Page';
+            element.textContent = '';
+            element.style.width = '0';
+            
+            // Start typing animation after a delay
+            setTimeout(() => {
+                element.style.animation = 'typing 2s steps(15, end), blink-caret 1s step-end infinite';
+                element.textContent = text;
+            }, 1000);
+        }
+
+        // Start typewriter effect when page loads
+        document.addEventListener('DOMContentLoaded', startTypewriter);
+
+        // Demo widget functionality
+        const demoForm = document.getElementById('demo-form');
+        const demoSuccess = document.getElementById('demo-success');
+        const demoError = document.getElementById('demo-error');
+        const demoComplete = document.getElementById('demo-complete');
+        
+        const emailInput = document.getElementById('demo-email');
+        const codeInput = document.getElementById('demo-code');
+        const codeVerifyInput = document.getElementById('demo-code-verify');
+        const getCodeBtn = document.getElementById('demo-get-code');
+        const loginBtn = document.getElementById('demo-login');
+        const verifyBtn = document.getElementById('demo-verify');
+        const resendBtn = document.getElementById('demo-resend');
+        const retryBtn = document.getElementById('demo-retry');
+        const resetBtn = document.getElementById('demo-reset');
+        
+        const errorText = document.getElementById('error-text');
+        
+        // State management
+        let currentState = 'form';
+        let isLoading = false;
+        
+        function showState(state) {
+            // Hide all states
+            demoForm.classList.add('hidden');
+            demoSuccess.classList.add('hidden');
+            demoError.classList.add('hidden');
+            demoComplete.classList.add('hidden');
+            
+            // Show current state
+            switch(state) {
+                case 'form':
+                    demoForm.classList.remove('hidden');
+                    break;
+                case 'success':
+                    demoSuccess.classList.remove('hidden');
+                    break;
+                case 'error':
+                    demoError.classList.remove('hidden');
+                    break;
+                case 'complete':
+                    demoComplete.classList.remove('hidden');
+                    break;
+            }
+            currentState = state;
+        }
+        
+        function setLoading(loading) {
+            isLoading = loading;
+            const widget = document.querySelector('.demo-widget-container');
+            if (loading) {
+                widget.classList.add('loading');
+            } else {
+                widget.classList.remove('loading');
+            }
+        }
+        
+        function showError(message) {
+            errorText.textContent = message;
+            showState('error');
+        }
+        
+        // API calls
+        async function requestCode(email) {
+            try {
+                const response = await fetch('/auth/request-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to send code');
+                }
+                
+                return data;
+            } catch (error) {
+                throw error;
+            }
+        }
+        
+        async function verifyCode(email, code) {
+            try {
+                const response = await fetch('/auth/verify-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, code })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Invalid code');
+                }
+                
+                return data;
+            } catch (error) {
+                throw error;
+            }
+        }
+        
+        // Event handlers
+        getCodeBtn.addEventListener('click', async () => {
+            if (isLoading) return;
+            
+            const email = emailInput.value.trim();
+            if (!email) {
+                showError('Please enter your email address');
+                return;
+            }
+            
+            if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+                showError('Please enter a valid email address');
+                return;
+            }
+            
+            setLoading(true);
+            
+            try {
+                await requestCode(email);
+                showState('success');
+                codeVerifyInput.focus();
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        });
+        
+        loginBtn.addEventListener('click', async () => {
+            if (isLoading) return;
+            
+            const email = emailInput.value.trim();
+            const code = codeInput.value.trim();
+            
+            if (!email) {
+                showError('Please enter your email address');
+                return;
+            }
+            
+            if (!code || code.length !== 6) {
+                showError('Please enter the 6-digit code');
+                return;
+            }
+            
+            setLoading(true);
+            
+            try {
+                await verifyCode(email, code);
+                showState('complete');
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        });
+        
+        verifyBtn.addEventListener('click', async () => {
+            if (isLoading) return;
+            
+            const email = emailInput.value.trim();
+            const code = codeVerifyInput.value.trim();
+            
+            if (!code || code.length !== 6) {
+                showError('Please enter the 6-digit code');
+                return;
+            }
+            
+            setLoading(true);
+            
+            try {
+                await verifyCode(email, code);
+                showState('complete');
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        });
+        
+        resendBtn.addEventListener('click', async () => {
+            if (isLoading) return;
+            
+            const email = emailInput.value.trim();
+            setLoading(true);
+            
+            try {
+                await requestCode(email);
+                codeVerifyInput.value = '';
+                codeVerifyInput.focus();
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        });
+        
+        retryBtn.addEventListener('click', () => {
+            showState('form');
+            emailInput.focus();
+        });
+        
+        resetBtn.addEventListener('click', () => {
+            emailInput.value = '';
+            codeInput.value = '';
+            codeVerifyInput.value = '';
+            showState('form');
+            emailInput.focus();
+        });
+        
+        // Enter key handling
+        emailInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                getCodeBtn.click();
+            }
+        });
+        
+        codeInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                loginBtn.click();
+            }
+        });
+        
+        codeVerifyInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                verifyBtn.click();
+            }
+        });
+        
+        // Auto-format code inputs
+        [codeInput, codeVerifyInput].forEach(input => {
+            input.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 6) {
+                    value = value.slice(0, 6);
+                }
+                e.target.value = value;
+            });
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Initialize
+        emailInput.focus();
+    </script>
+</body>
+</html>
