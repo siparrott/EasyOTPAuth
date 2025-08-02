@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - EasyOTPAuth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+    <div class="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8 text-center">
+        <!-- Success Icon -->
+        <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
+            <i class="fas fa-check text-green-600 text-2xl"></i>
+        </div>
+        
+        <!-- Success Message -->
+        <h1 class="text-2xl font-bold text-gray-900 mb-4">
+            🎉 Payment Successful!
+        </h1>
+        
+        <p class="text-gray-600 mb-8">
+            Thank you for subscribing to EasyOTPAuth! Your account has been activated and you should receive an email shortly with your API key and setup instructions.
+        </p>
+        
+        <!-- What's Next -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-left">
+            <h3 class="font-semibold text-blue-900 mb-2">What's Next?</h3>
+            <ul class="text-sm text-blue-800 space-y-1">
+                <li>✓ Check your email for your API key</li>
+                <li>✓ Access your dashboard</li>
+                <li>✓ Start integrating with our API</li>
+                <li>✓ Enjoy your 14-day free trial</li>
+            </ul>
+        </div>
+        
+        <!-- Loading state for dashboard redirect -->
+        <div id="loading" class="mb-6">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+            <p class="text-sm text-gray-600">Setting up your dashboard...</p>
+        </div>
+        
+        <!-- Action buttons -->
+        <div id="actions" class="space-y-3" style="display: none;">
+            <button onclick="openDashboard()" class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                <i class="fas fa-tachometer-alt mr-2"></i>
+                Open Dashboard
+            </button>
+            
+            <button onclick="goHome()" class="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors">
+                <i class="fas fa-home mr-2"></i>
+                Back to Homepage
+            </button>
+        </div>
+        
+        <!-- Error state -->
+        <div id="error" class="text-red-600" style="display: none;">
+            <p class="mb-4">We're setting up your account. Please check your email for your dashboard link.</p>
+            <button onclick="goHome()" class="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors">
+                <i class="fas fa-home mr-2"></i>
+                Back to Homepage
+            </button>
+        </div>
+        
+        <!-- Support Info -->
+        <div class="mt-8 pt-6 border-t border-gray-200">
+            <p class="text-sm text-gray-500">
+                Need help? Contact us at <a href="mailto:support@easyotpauth.com" class="text-blue-600 hover:underline">support@easyotpauth.com</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let customerApiKey = null;
+
+        // Get session ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+
+        if (!sessionId) {
+            // No session ID, show error
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+        } else {
+            // We have a session ID, wait a moment for webhook processing
+            setTimeout(checkAccountSetup, 3000);
+        }
+
+        async function checkAccountSetup() {
+            try {
+                // In a real implementation, you might verify the session and get customer info
+                // For now, we'll simulate account setup completion
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Show action buttons
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('actions').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Account setup check failed:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+            }
+        }
+
+        function openDashboard() {
+            // In a real implementation, you would get the actual API key
+            // For now, redirect to a general dashboard message
+            window.location.href = '/dashboard.html?setup=complete';
+        }
+
+        function goHome() {
+            window.location.href = '/';
+        }
+
+        // Auto-redirect after 30 seconds if no action taken
+        setTimeout(() => {
+            if (window.location.pathname === '/success') {
+                goHome();
+            }
+        }, 30000);
+    </script>
+</body>
+</html>

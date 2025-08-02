@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyOTPAuth Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <img src="logo.png" alt="Logo" class="h-10 w-auto" onerror="this.style.display='none'">
+                    <h1 class="text-2xl font-bold text-gray-900">EasyOTPAuth Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600" id="user-email">Loading...</span>
+                    <button onclick="logout()" class="text-sm text-red-600 hover:text-red-800">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Loading State -->
+    <div id="loading" class="flex items-center justify-center min-h-screen">
+        <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+    </div>
+
+    <!-- Main Content -->
+    <main id="dashboard-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style="display: none;">
+        
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <!-- Usage Stats -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-chart-line text-2xl text-blue-600"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Usage This Month</dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900" id="usage-count">-</div>
+                                    <div class="ml-2 text-sm text-gray-600" id="usage-limit">of - requests</div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" id="usage-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1" id="usage-percentage">0% used</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Plan -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-crown text-2xl text-yellow-600"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Current Plan</dt>
+                                <dd class="text-2xl font-semibold text-gray-900 capitalize" id="plan-type">-</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <button onclick="upgradePlan()" class="mt-3 text-sm text-blue-600 hover:text-blue-800 font-medium">
+                        Upgrade Plan →
+                    </button>
+                </div>
+            </div>
+
+            <!-- API Status -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-check-circle text-2xl text-green-600"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">API Status</dt>
+                                <dd class="text-2xl font-semibold text-green-600">Active</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">All systems operational</div>
+                </div>
+            </div>
+
+            <!-- Next Billing -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-calendar text-2xl text-purple-600"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Next Billing</dt>
+                                <dd class="text-lg font-semibold text-gray-900" id="next-billing">Loading...</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-600 mt-1" id="billing-amount">-</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Configuration Section -->
+        <div class="bg-white shadow rounded-lg mb-8">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                    <i class="fas fa-key text-blue-600 mr-2"></i>
+                    API Configuration
+                </h3>
+                
+                <!-- API Key -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Your API Key</label>
+                    <div class="flex rounded-md shadow-sm">
+                        <input 
+                            type="password" 
+                            id="api-key" 
+                            class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-l-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500 sm:text-sm font-mono"
+                            readonly
+                        >
+                        <button onclick="toggleAPIKey()" class="inline-flex items-center px-3 py-2 border border-l-0 border-gray-300 rounded-r-md bg-gray-50 text-gray-500 text-sm hover:bg-gray-100">
+                            <i class="fas fa-eye" id="toggle-icon"></i>
+                        </button>
+                        <button onclick="copyAPIKey()" class="ml-2 inline-flex items-center px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-500 text-sm hover:bg-gray-50">
+                            <i class="fas fa-copy mr-1"></i> Copy
+                        </button>
+                    </div>
+                </div>
+
+                <!-- API Endpoint -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">API Endpoint</label>
+                    <div class="bg-gray-50 rounded-md p-3 font-mono text-sm text-gray-800 border">
+                        <span id="api-endpoint">https://your-domain.vercel.app/auth/</span>
+                        <button onclick="copyEndpoint()" class="ml-2 text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Start Example -->
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="text-sm font-medium text-gray-700">Quick Start Example</h4>
+                        <button onclick="copyExample()" class="text-sm text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-copy mr-1"></i> Copy Code
+                        </button>
+                    </div>
+                    <pre class="bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto" id="code-example"><code>// Request OTP
+curl -X POST https://your-domain.vercel.app/auth/request-code \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user@example.com"}'
+
+// Verify OTP  
+curl -X POST https://your-domain.vercel.app/auth/verify-code \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user@example.com", "code": "123456"}'</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-white shadow rounded-lg mb-8">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                    <i class="fas fa-history text-blue-600 mr-2"></i>
+                    Recent API Activity
+                </h3>
+                <div class="overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Endpoint</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP Address</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activity-table" class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="4" class="px-6 py-4 text-center text-gray-500">Loading recent activity...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Billing Section -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                    <i class="fas fa-credit-card text-blue-600 mr-2"></i>
+                    Billing & Subscription
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Subscription Status</h4>
+                        <div class="text-lg font-semibold text-green-600" id="subscription-status">Active</div>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Billing Cycle</h4>
+                        <div class="text-lg text-gray-900" id="billing-cycle">Monthly</div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="openBillingPortal()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <i class="fas fa-cog mr-2"></i>
+                        Manage Billing
+                    </button>
+                    <button onclick="upgradePlan()" class="inline-flex items-center px-4 py-2 border border-blue-600 text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <i class="fas fa-arrow-up mr-2"></i>
+                        Upgrade Plan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Success/Error Messages -->
+    <div id="message" class="fixed top-4 right-4 max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5" style="display: none;">
+        <div class="p-4">
+            <div class="flex items-start">
+                <div class="flex-shrink-0">
+                    <i id="message-icon" class="text-xl"></i>
+                </div>
+                <div class="ml-3 w-0 flex-1">
+                    <p id="message-text" class="text-sm font-medium text-gray-900"></p>
+                </div>
+                <div class="ml-4 flex-shrink-0 flex">
+                    <button onclick="hideMessage()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentApiKey = '';
+        let dashboardData = null;
+
+        // Initialize dashboard
+        async function initDashboard() {
+            const apiKey = new URLSearchParams(window.location.search).get('key');
+            
+            if (!apiKey) {
+                showMessage('error', 'Invalid access. Please check your email for the dashboard link.');
+                setTimeout(() => window.location.href = '/', 3000);
+                return;
+            }
+            
+            currentApiKey = apiKey;
+            await loadDashboardData();
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                const response = await fetch('/api/dashboard', {
+                    headers: { 'X-API-Key': currentApiKey }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                dashboardData = await response.json();
+                updateUI();
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('dashboard-content').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Failed to load dashboard:', error);
+                showMessage('error', 'Failed to load dashboard data. Please try again.');
+            }
+        }
+
+        // Update UI with dashboard data
+        function updateUI() {
+            if (!dashboardData) return;
+
+            // User info
+            document.getElementById('user-email').textContent = dashboardData.customer.email;
+
+            // Usage stats
+            document.getElementById('usage-count').textContent = dashboardData.usage.current.toLocaleString();
+            document.getElementById('usage-limit').textContent = dashboardData.usage.limit === -1 
+                ? 'unlimited' 
+                : `of ${dashboardData.usage.limit.toLocaleString()} requests`;
+            
+            const percentage = Math.min(100, Math.round(dashboardData.usage.percentage));
+            document.getElementById('usage-bar').style.width = `${percentage}%`;
+            document.getElementById('usage-percentage').textContent = `${percentage}% used`;
+
+            // Plan info
+            document.getElementById('plan-type').textContent = dashboardData.customer.planType;
+
+            // API key
+            document.getElementById('api-key').value = dashboardData.apiKey;
+
+            // Update code example with actual API key
+            const endpoint = window.location.origin;
+            document.getElementById('api-endpoint').textContent = `${endpoint}/auth/`;
+            
+            const exampleCode = `// Request OTP
+curl -X POST ${endpoint}/auth/request-code \\
+  -H "X-API-Key: ${dashboardData.apiKey}" \\
+  -H "Content-Type: application/json" \\
+  -d '{"email": "user@example.com"}'
+
+// Verify OTP  
+curl -X POST ${endpoint}/auth/verify-code \\
+  -H "X-API-Key: ${dashboardData.apiKey}" \\
+  -H "Content-Type: application/json" \\
+  -d '{"email": "user@example.com", "code": "123456"}'`;
+            
+            document.getElementById('code-example').innerHTML = `<code>${exampleCode}</code>`;
+
+            // Billing info
+            if (dashboardData.billing) {
+                const nextBilling = new Date(dashboardData.billing.current_period_end * 1000);
+                document.getElementById('next-billing').textContent = nextBilling.toLocaleDateString();
+                document.getElementById('billing-amount').textContent = 
+                    `$${(dashboardData.billing.plan.amount / 100).toFixed(2)}`;
+                document.getElementById('subscription-status').textContent = 
+                    dashboardData.billing.status.charAt(0).toUpperCase() + dashboardData.billing.status.slice(1);
+            }
+
+            // Recent activity
+            updateActivityTable();
+        }
+
+        // Update activity table
+        function updateActivityTable() {
+            const tbody = document.getElementById('activity-table');
+            
+            if (!dashboardData.recentActivity || dashboardData.recentActivity.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">No recent activity</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = dashboardData.recentActivity.map(activity => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        ${new Date(activity.timestamp).toLocaleString()}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-mono">
+                        ${activity.endpoint}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${activity.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                            ${activity.success ? 'Success' : 'Failed'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+                        ${activity.ipAddress}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Toggle API key visibility
+        function toggleAPIKey() {
+            const input = document.getElementById('api-key');
+            const icon = document.getElementById('toggle-icon');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        // Copy API key
+        async function copyAPIKey() {
+            try {
+                await navigator.clipboard.writeText(dashboardData.apiKey);
+                showMessage('success', 'API key copied to clipboard!');
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                showMessage('error', 'Failed to copy API key');
+            }
+        }
+
+        // Copy endpoint
+        async function copyEndpoint() {
+            try {
+                const endpoint = document.getElementById('api-endpoint').textContent;
+                await navigator.clipboard.writeText(endpoint);
+                showMessage('success', 'Endpoint copied to clipboard!');
+            } catch (err) {
+                showMessage('error', 'Failed to copy endpoint');
+            }
+        }
+
+        // Copy code example
+        async function copyExample() {
+            try {
+                const code = document.getElementById('code-example').textContent;
+                await navigator.clipboard.writeText(code);
+                showMessage('success', 'Code example copied to clipboard!');
+            } catch (err) {
+                showMessage('error', 'Failed to copy code example');
+            }
+        }
+
+        // Open billing portal
+        async function openBillingPortal() {
+            try {
+                const response = await fetch('/api/create-portal-session', {
+                    method: 'POST',
+                    headers: {
+                        'X-API-Key': currentApiKey,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        returnUrl: window.location.href
+                    })
+                });
+
+                const data = await response.json();
+                if (data.url) {
+                    window.location.href = data.url;
+                } else {
+                    throw new Error('Failed to create portal session');
+                }
+            } catch (error) {
+                console.error('Portal error:', error);
+                showMessage('error', 'Failed to open billing portal');
+            }
+        }
+
+        // Upgrade plan
+        function upgradePlan() {
+            window.location.href = '/pricing';
+        }
+
+        // Logout
+        function logout() {
+            window.location.href = '/';
+        }
+
+        // Show message
+        function showMessage(type, text) {
+            const messageDiv = document.getElementById('message');
+            const messageIcon = document.getElementById('message-icon');
+            const messageText = document.getElementById('message-text');
+
+            messageIcon.className = type === 'success' 
+                ? 'fas fa-check-circle text-green-500' 
+                : 'fas fa-exclamation-circle text-red-500';
+            messageText.textContent = text;
+            
+            messageDiv.style.display = 'block';
+            setTimeout(hideMessage, 5000);
+        }
+
+        // Hide message
+        function hideMessage() {
+            document.getElementById('message').style.display = 'none';
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>

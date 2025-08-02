@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to EasyOTPAuth!</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .email-container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .logo {
+            max-width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        
+        .welcome-title {
+            color: #2563eb;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .plan-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: capitalize;
+            margin: 15px 0;
+        }
+        
+        .api-key-section {
+            background: #f8f9ff;
+            border: 2px solid #e0e7ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        
+        .api-key {
+            font-family: 'Courier New', monospace;
+            background: #1f2937;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+        
+        .dashboard-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 20px 0;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .dashboard-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .quick-start {
+            background: #f0f9ff;
+            border-left: 4px solid #0ea5e9;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        
+        .code-example {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .feature-list li:before {
+            content: "✅ ";
+            margin-right: 10px;
+        }
+        
+        .support-section {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .social-links {
+            margin: 15px 0;
+        }
+        
+        .social-links a {
+            color: #3b82f6;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <img src="{{logoUrl}}" alt="{{appName}}" class="logo" />
+            <h1 class="welcome-title">🎉 Welcome to {{appName}}!</h1>
+            <div class="plan-badge">{{planType}} Plan</div>
+        </div>
+        
+        <!-- Welcome Message -->
+        <p style="font-size: 18px; margin-bottom: 25px;">
+            Hi {{customerName}},
+        </p>
+        
+        <p>
+            <strong>Congratulations!</strong> Your {{planType}} plan is now active and ready to use. 
+            You now have access to our powerful OTP authentication API that will make implementing 
+            passwordless login a breeze.
+        </p>
+        
+        <!-- API Key Section -->
+        <div class="api-key-section">
+            <h3 style="margin-top: 0; color: #1f2937;">🔑 Your API Key</h3>
+            <p>Here's your unique API key - keep this secure and never share it publicly:</p>
+            <div class="api-key">{{apiKey}}</div>
+            <p style="font-size: 14px; color: #6b7280;">
+                💡 <strong>Tip:</strong> Store this in your environment variables as <code>EASYOTPAUTH_API_KEY</code>
+            </p>
+        </div>
+        
+        <!-- Dashboard Access -->
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{dashboardUrl}}" class="dashboard-button">
+                📊 Access Your Dashboard
+            </a>
+        </div>
+        
+        <!-- Quick Start Guide -->
+        <div class="quick-start">
+            <h3 style="margin-top: 0;">🚀 Quick Start Guide</h3>
+            <p>Get up and running in under 5 minutes:</p>
+            
+            <h4>1. Send an OTP Code:</h4>
+            <div class="code-example">curl -X POST {{apiEndpoint}}/request-code \
+  -H "X-API-Key: {{apiKey}}" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user@example.com"}'</div>
+            
+            <h4>2. Verify the Code:</h4>
+            <div class="code-example">curl -X POST {{apiEndpoint}}/verify-code \
+  -H "X-API-Key: {{apiKey}}" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user@example.com", "code": "123456"}'</div>
+            
+            <p>That's it! Your users can now authenticate without passwords. 🎊</p>
+        </div>
+        
+        <!-- Plan Features -->
+        <h3>✨ Your {{planType}} Plan Includes:</h3>
+        <ul class="feature-list">
+            {{#each features}}
+            <li>{{this}}</li>
+            {{/each}}
+        </ul>
+        
+        <!-- Trial Information -->
+        {{#if trialDays}}
+        <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 20px; margin: 25px 0;">
+            <h3 style="margin-top: 0; color: #047857;">🆓 Free Trial Active</h3>
+            <p>
+                You're currently on a <strong>{{trialDays}}-day free trial</strong>. 
+                Your first billing cycle will begin on <strong>{{trialEndDate}}</strong>.
+                You can cancel anytime before then with no charges.
+            </p>
+        </div>
+        {{/if}}
+        
+        <!-- Usage Tracking -->
+        <div style="background: #f0f9ff; border: 1px solid #3b82f6; border-radius: 8px; padding: 20px; margin: 25px 0;">
+            <h3 style="margin-top: 0; color: #1e40af;">📈 Usage Tracking</h3>
+            <p>
+                Monitor your API usage in real-time through your dashboard. 
+                Your {{planType}} plan includes <strong>{{usageLimit}}</strong> authentications per month.
+            </p>
+            <p style="font-size: 14px; color: #6b7280;">
+                Need more? You can upgrade your plan anytime from your dashboard.
+            </p>
+        </div>
+        
+        <!-- Resources -->
+        <h3>📚 Helpful Resources</h3>
+        <ul style="list-style-type: none; padding: 0;">
+            <li style="padding: 8px 0;">
+                📖 <a href="{{docsUrl}}" style="color: #3b82f6; text-decoration: none;">API Documentation</a>
+            </li>
+            <li style="padding: 8px 0;">
+                🛠️ <a href="{{dashboardUrl}}" style="color: #3b82f6; text-decoration: none;">Your Dashboard</a>
+            </li>
+            <li style="padding: 8px 0;">
+                💡 <a href="{{examplesUrl}}" style="color: #3b82f6; text-decoration: none;">Code Examples & Tutorials</a>
+            </li>
+            <li style="padding: 8px 0;">
+                ❓ <a href="{{supportUrl}}" style="color: #3b82f6; text-decoration: none;">Help & Support</a>
+            </li>
+        </ul>
+        
+        <!-- Support Section -->
+        <div class="support-section">
+            <h3 style="margin-top: 0; color: #92400e;">🤝 Need Help?</h3>
+            <p>
+                Our team is here to help you succeed! If you have any questions or need assistance 
+                with integration, don't hesitate to reach out.
+            </p>
+            <p>
+                📧 Email: <a href="mailto:{{supportEmail}}" style="color: #92400e;">{{supportEmail}}</a><br>
+                ⚡ Response time: {{responseTime}}
+            </p>
+        </div>
+        
+        <!-- Next Steps -->
+        <div style="background: #f9fafb; border-radius: 8px; padding: 20px; margin: 25px 0;">
+            <h3 style="margin-top: 0; color: #374151;">🎯 Recommended Next Steps</h3>
+            <ol style="color: #4b5563;">
+                <li>Bookmark your dashboard: <a href="{{dashboardUrl}}" style="color: #3b82f6;">{{dashboardUrl}}</a></li>
+                <li>Test the API with the examples above</li>
+                <li>Integrate OTP authentication into your application</li>
+                <li>Set up monitoring and error handling</li>
+                <li>Go live and start authenticating users! 🚀</li>
+            </ol>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>
+                Thank you for choosing {{appName}}!<br>
+                We're excited to be part of your authentication journey.
+            </p>
+            
+            <div class="social-links">
+                <a href="{{websiteUrl}}">Website</a> |
+                <a href="{{docsUrl}}">Documentation</a> |
+                <a href="{{supportUrl}}">Support</a>
+            </div>
+            
+            <p style="font-size: 12px; color: #9ca3af; margin-top: 20px;">
+                {{appName}} - Passwordless Authentication Made Simple<br>
+                You're receiving this email because you subscribed to our service.<br>
+                <a href="{{unsubscribeUrl}}" style="color: #9ca3af;">Unsubscribe</a> | 
+                <a href="{{privacyUrl}}" style="color: #9ca3af;">Privacy Policy</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

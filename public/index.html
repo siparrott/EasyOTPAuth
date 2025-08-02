@@ -945,7 +945,7 @@
                 <div class="pricing-card">
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">Starter</h3>
                     <div class="mb-6">
-                        <span class="text-4xl font-black text-gray-900">€49</span>
+                        <span class="text-4xl font-black text-gray-900">$29</span>
                         <span class="text-gray-600">/month</span>
                     </div>
                     <ul class="space-y-3 mb-8 text-gray-600">
@@ -965,17 +965,21 @@
                             <span class="text-green-500">✓</span>
                             Standard integrations
                         </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-green-500">✓</span>
+                            14-day free trial
+                        </li>
                     </ul>
-                    <a href="/public/login.html" class="btn-secondary w-full py-4 block text-center">
-                        Get Started
-                    </a>
+                    <button onclick="subscribeToPlan('starter')" class="btn-secondary w-full py-4">
+                        Start Free Trial
+                    </button>
                 </div>
                 
                 <!-- Professional -->
                 <div class="pricing-card featured">
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">Professional</h3>
                     <div class="mb-6">
-                        <span class="text-4xl font-black text-gray-900">€149</span>
+                        <span class="text-4xl font-black text-gray-900">$149</span>
                         <span class="text-gray-600">/month</span>
                     </div>
                     <ul class="space-y-3 mb-8 text-gray-600">
@@ -999,10 +1003,14 @@
                             <span class="text-green-500">✓</span>
                             99.9% uptime SLA
                         </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-green-500">✓</span>
+                            14-day free trial
+                        </li>
                     </ul>
-                    <a href="/public/login.html" class="btn-primary w-full py-4 block text-center">
-                        Start Professional
-                    </a>
+                    <button onclick="subscribeToPlan('professional')" class="btn-primary w-full py-4">
+                        Start Free Trial
+                    </button>
                 </div>
                 
                 <!-- Enterprise -->
@@ -1030,12 +1038,16 @@
                         </li>
                         <li class="flex items-center gap-3">
                             <span class="text-green-500">✓</span>
-                            99.99% uptime SLA
+                            White-label solution
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-green-500">✓</span>
+                            30-day free trial
                         </li>
                     </ul>
-                    <a href="/public/login.html" class="btn-secondary w-full py-4 block text-center">
+                    <button onclick="contactSales()" class="btn-secondary w-full py-4">
                         Contact Sales
-                    </a>
+                    </button>
                 </div>
             </div>
             
@@ -1350,6 +1362,268 @@
         
         // Initialize
         emailInput.focus();
+        
+        // =============== STRIPE PAYMENT FUNCTIONS ===============
+        
+        // Stripe product configuration (these will be set via environment variables)
+        const STRIPE_PRODUCTS = {
+            starter: {
+                priceId: 'price_starter_monthly', // Will be replaced with actual Stripe price ID
+                name: 'Starter Plan',
+                price: 2900
+            },
+            professional: {
+                priceId: 'price_professional_monthly', // Will be replaced with actual Stripe price ID
+                name: 'Professional Plan',
+                price: 14900
+            }
+        };
+        
+        // Subscribe to a plan
+        async function subscribeToPlan(planType) {
+            const product = STRIPE_PRODUCTS[planType];
+            
+            if (!product) {
+                alert('Invalid plan selected. Please try again.');
+                return;
+            }
+            
+            // Get customer email
+            const email = prompt(`Enter your email address to start your ${product.name}:`);
+            
+            if (!email || !validateEmail(email)) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+            
+            // Show loading state
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = 'Setting up payment...';
+            button.disabled = true;
+            
+            try {
+                // Create checkout session
+                const response = await fetch('/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        priceId: product.priceId,
+                        customerEmail: email,
+                        planType: planType
+                    })
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Payment setup failed');
+                }
+                
+                const { url } = await response.json();
+                
+                // Redirect to Stripe Checkout
+                window.location.href = url;
+                
+            } catch (error) {
+                console.error('Payment error:', error);
+                alert(`Payment setup failed: ${error.message}. Please try again or contact support.`);
+                
+                // Restore button
+                button.textContent = originalText;
+                button.disabled = false;
+            }
+        }
+        
+        // Contact sales for enterprise
+        function contactSales() {
+            const email = 'sales@easyotpauth.com';
+            const subject = 'Enterprise Plan Inquiry';
+            const body = `Hi,
+
+I'm interested in the Enterprise plan for EasyOTPAuth. Could you please provide more information about:
+
+- Custom pricing options
+- Dedicated support
+- On-premise deployment
+- White-label solutions
+- Custom integrations
+
+My company details:
+- Company name: 
+- Expected monthly authentications: 
+- Integration timeline: 
+- Special requirements: 
+
+Thank you!`;
+            
+            const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
+        }
+        
+        // Email validation helper
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        // Make functions globally available
+        window.subscribeToPlan = subscribeToPlan;
+        window.contactSales = contactSales;
+        
+        // =============== PAYMENT FUNCTIONS ===============
+        
+        // Stripe pricing configuration
+        const STRIPE_PLANS = {
+            starter: {
+                priceId: 'price_starter_monthly', // Will be replaced with actual Stripe price ID
+                name: 'Starter Plan',
+                price: '$29/month'
+            },
+            professional: {
+                priceId: 'price_professional_monthly', // Will be replaced with actual Stripe price ID
+                name: 'Professional Plan',
+                price: '$149/month'
+            }
+        };
+
+        // Subscribe to a plan
+        async function subscribeToPlan(planType) {
+            const plan = STRIPE_PLANS[planType];
+            if (!plan) {
+                alert('Invalid plan selected');
+                return;
+            }
+
+            // Get customer email
+            const email = prompt(`Enter your email address to start your free trial for the ${plan.name}:`);
+            if (!email || !isValidEmail(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            try {
+                showLoading(`Setting up your ${plan.name} subscription...`);
+
+                const response = await fetch('/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        priceId: plan.priceId,
+                        customerEmail: email,
+                        planType: planType
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to create checkout session');
+                }
+
+                // Redirect to Stripe Checkout
+                window.location.href = data.url;
+
+            } catch (error) {
+                console.error('Subscription error:', error);
+                alert(`Failed to start subscription: ${error.message}\n\nPlease try again or contact support.`);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Contact sales for enterprise
+        function contactSales() {
+            const subject = encodeURIComponent('Enterprise Plan Inquiry - EasyOTPAuth');
+            const body = encodeURIComponent(`Hi,
+
+I'm interested in the Enterprise plan for EasyOTPAuth. Could you please provide more information about:
+
+- Custom pricing options
+- On-premise deployment
+- White-label solutions
+- Dedicated support
+
+My requirements:
+- Expected monthly authentications: 
+- Organization size:
+- Specific integration needs:
+
+Thank you!`);
+            
+            window.location.href = `mailto:sales@easyotpauth.com?subject=${subject}&body=${body}`;
+        }
+
+        // Email validation
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        // Show loading state
+        function showLoading(message = 'Processing...') {
+            // Create or update loading overlay
+            let overlay = document.getElementById('payment-loading');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'payment-loading';
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 9999;
+                    color: white;
+                    font-size: 18px;
+                `;
+                document.body.appendChild(overlay);
+            }
+            
+            overlay.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="border: 4px solid #f3f3f3; border-top: 4px solid #FFA500; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+                    <div>${message}</div>
+                </div>
+                <style>
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                </style>
+            `;
+            overlay.style.display = 'flex';
+        }
+
+        // Hide loading state
+        function hideLoading() {
+            const overlay = document.getElementById('payment-loading');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        }
+        
+        // Handle successful payment (called from success page)
+        function handlePaymentSuccess() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sessionId = urlParams.get('session_id');
+            
+            if (sessionId) {
+                showSuccess('Payment successful! Check your email for your API key and dashboard access.');
+            }
+        }
+        
+        // Call on page load if this is a success page
+        if (window.location.pathname === '/success' || window.location.search.includes('session_id')) {
+            handlePaymentSuccess();
+        }
     </script>
 </body>
 </html>

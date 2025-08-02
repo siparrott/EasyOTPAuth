@@ -1,0 +1,110 @@
+🎉 WELCOME TO {{appName}}! 🎉
+
+Hi {{customerName}},
+
+Congratulations! Your {{planType}} plan is now active and ready to use.
+
+===================
+🔑 YOUR API KEY
+===================
+
+{{apiKey}}
+
+⚠️  IMPORTANT: Keep this secure and never share it publicly!
+💡 TIP: Store this in your environment variables as EASYOTPAUTH_API_KEY
+
+===================
+📊 YOUR DASHBOARD
+===================
+
+Access your dashboard here: {{dashboardUrl}}
+
+===================
+🚀 QUICK START GUIDE
+===================
+
+Get up and running in under 5 minutes:
+
+1. Send an OTP Code:
+curl -X POST {{apiEndpoint}}/request-code \
+  -H "X-API-Key: {{apiKey}}" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user@example.com"}'
+
+2. Verify the Code:
+curl -X POST {{apiEndpoint}}/verify-code \
+  -H "X-API-Key: {{apiKey}}" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user@example.com", "code": "123456"}'
+
+That's it! Your users can now authenticate without passwords. 🎊
+
+===================
+✨ YOUR {{planType}} PLAN INCLUDES
+===================
+
+{{#each features}}
+✅ {{this}}
+{{/each}}
+
+{{#if trialDays}}
+===================
+🆓 FREE TRIAL ACTIVE
+===================
+
+You're currently on a {{trialDays}}-day free trial.
+Your first billing cycle will begin on {{trialEndDate}}.
+You can cancel anytime before then with no charges.
+{{/if}}
+
+===================
+📈 USAGE TRACKING
+===================
+
+Monitor your API usage in real-time through your dashboard.
+Your {{planType}} plan includes {{usageLimit}} authentications per month.
+
+Need more? You can upgrade your plan anytime from your dashboard.
+
+===================
+📚 HELPFUL RESOURCES
+===================
+
+📖 API Documentation: {{docsUrl}}
+🛠️ Your Dashboard: {{dashboardUrl}}
+💡 Code Examples: {{examplesUrl}}
+❓ Help & Support: {{supportUrl}}
+
+===================
+🤝 NEED HELP?
+===================
+
+Our team is here to help you succeed! If you have any questions or need 
+assistance with integration, don't hesitate to reach out.
+
+📧 Email: {{supportEmail}}
+⚡ Response time: {{responseTime}}
+
+===================
+🎯 RECOMMENDED NEXT STEPS
+===================
+
+1. Bookmark your dashboard: {{dashboardUrl}}
+2. Test the API with the examples above
+3. Integrate OTP authentication into your application
+4. Set up monitoring and error handling
+5. Go live and start authenticating users! 🚀
+
+===================
+
+Thank you for choosing {{appName}}!
+We're excited to be part of your authentication journey.
+
+Website: {{websiteUrl}}
+Documentation: {{docsUrl}}
+Support: {{supportUrl}}
+
+{{appName}} - Passwordless Authentication Made Simple
+
+You're receiving this email because you subscribed to our service.
+Unsubscribe: {{unsubscribeUrl}} | Privacy Policy: {{privacyUrl}}
