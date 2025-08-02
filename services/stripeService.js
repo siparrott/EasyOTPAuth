@@ -218,7 +218,7 @@ Thank you for choosing EasyOTPAuth!
         trialDays: 14,
         trialEndDate: trialEndDate.toLocaleDateString(),
         features: this.getPlanFeatures(customer.planType),
-        logoUrl: process.env.BRANDING_LOGO_URL || 'https://i.postimg.cc/Qx8C6tgQ/Chat-GPT-Image-Jun-19-2025-02-30-24-PM.png',
+        logoUrl: process.env.BRANDING_LOGO_URL || `${process.env.DOMAIN}/logo.png`,
         supportEmail: process.env.BRANDING_SUPPORT_EMAIL || 'support@easyotpauth.com',
         responseTime: customer.planType === 'professional' ? 'Within 4 hours' : 'Within 24 hours',
         websiteUrl: process.env.DOMAIN || 'https://easyotpauth.com',
