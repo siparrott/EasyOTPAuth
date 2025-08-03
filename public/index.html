@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RapidAuth.pro - Enterprise Passwordless Authentication</title>
+    <title>EasyOTPAuth - Enterprise Passwordless Authentication</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/public/css/theme.css">
+    <!-- Animation Libraries -->
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/intersection-observer@0.7.0/intersection-observer.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -325,6 +328,169 @@
             }
         }
 
+        /* NEW ANIMATIONS */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .counter-animation {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-container iframe,
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .feature-icon {
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #FFA500, #FF6B35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cta-banner {
+            background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 165, 0, 0.1);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(255, 165, 0, 0.15);
+        }
+
+        .metric-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #FFA500;
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            color: #374151;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .video-placeholder {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 2px dashed #cbd5e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .video-placeholder:hover {
+            border-color: #FFA500;
+            background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
+        }
+
+        .video-play-btn {
+            width: 80px;
+            height: 80px;
+            background: #FFA500;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(255, 165, 0, 0.3);
+        }
+
+        .video-placeholder:hover .video-play-btn {
+            transform: scale(1.1);
+            box-shadow: 0 12px 40px rgba(255, 165, 0, 0.4);
+        }
+
         /* Demo Widget Specific Styles */
         .demo-section {
             background: #F8FAFC;
@@ -583,7 +749,7 @@
                 <div class="bg-green-50 border-l-4 border-green-400 p-8 rounded-lg">
                     <div class="flex items-center mb-6">
                         <div class="text-green-400 text-2xl mr-4">✅</div>
-                        <h3 class="text-2xl font-bold text-gray-900">What Happens With RapidAuth.pro</h3>
+                        <h3 class="text-2xl font-bold text-gray-900">What Happens With EasyOTPAuth</h3>
                     </div>
                     <ul class="space-y-4 text-gray-700">
                         <li class="flex items-start">
@@ -797,7 +963,7 @@
                         <tr>
                             <th class="text-left">Challenge</th>
                             <th class="text-center traditional">Traditional Passwords & Login</th>
-                            <th class="text-center rapidauth">RapidAuth.pro</th>
+                            <th class="text-center rapidauth">EasyOTPAuth</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1059,6 +1225,213 @@
         </div>
     </section>
 
+    <!-- NEW SECTION: Feature Image Cards -->
+    <section class="py-20 bg-white fade-in" id="feature-cards">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-gray-900 mb-8">
+                    Why Smart Companies Choose <span class="gradient-text">EasyOTPAuth</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Three core advantages that make passwordless authentication the obvious choice for growth-focused businesses.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Card 1: Conversion -->
+                <div class="feature-card hover-lift">
+                    <div class="feature-icon text-6xl mb-6 text-center">🚀</div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">3x Higher Conversions</h3>
+                    <p class="text-gray-600 text-center leading-relaxed">
+                        Users complete signup 3x faster without password complexity. 
+                        No typing, no remembering, no friction—just instant access that converts visitors into customers.
+                    </p>
+                    <div class="mt-6 text-center">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                            ✓ Proven Results
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Card 2: Security -->
+                <div class="feature-card hover-lift">
+                    <div class="feature-icon text-6xl mb-6 text-center">🛡️</div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">Zero Password Breaches</h3>
+                    <p class="text-gray-600 text-center leading-relaxed">
+                        No stored passwords means no credential theft. Enterprise-grade security with SOC 2 compliance, 
+                        JWT tokens, and email-based verification that hackers can't compromise.
+                    </p>
+                    <div class="mt-6 text-center">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                            ✓ Bank-Level Security
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Card 3: Support -->
+                <div class="feature-card hover-lift">
+                    <div class="feature-icon text-6xl mb-6 text-center">💰</div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">85% Fewer Support Tickets</h3>
+                    <p class="text-gray-600 text-center leading-relaxed">
+                        Eliminate password reset requests, forgotten credential calls, and account lockout issues. 
+                        Your support team focuses on growth, not password problems.
+                    </p>
+                    <div class="mt-6 text-center">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800">
+                            ✓ Cost Savings
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW SECTION: Video Explainer -->
+    <section class="py-20 bg-gray-50 fade-in" id="video-demo">
+        <div class="max-w-6xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-gray-900 mb-8">
+                    See EasyOTPAuth in Action
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Watch how passwordless authentication transforms your user experience in under 60 seconds.
+                </p>
+            </div>
+            
+            <div class="video-container">
+                <!-- Video Placeholder -->
+                <div class="video-placeholder" onclick="playVideo()">
+                    <div class="video-play-btn">
+                        ▶️
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">EasyOTPAuth Demo</h3>
+                    <p class="text-gray-600 text-center max-w-md">
+                        See the complete authentication flow from email entry to successful login—no passwords, no friction, just results.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="/public/login.html" class="btn-primary text-lg px-8 py-4 inline-flex items-center gap-2">
+                    <span>⚡</span> Try Live Demo Now
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW SECTION: Customer Success Metrics -->
+    <section class="py-20 bg-white fade-in" id="success-metrics">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-gray-900 mb-8">
+                    Real Numbers from Real Customers
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    See the measurable impact EasyOTPAuth has on conversion rates, user experience, and business growth.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-4 gap-8">
+                <!-- Metric 1 -->
+                <div class="metric-card">
+                    <div class="metric-number counter-animation" data-count="3">0</div>
+                    <div class="metric-label">Times Higher Conversion</div>
+                    <p class="text-gray-500 text-sm mt-3">vs traditional login flows</p>
+                </div>
+
+                <!-- Metric 2 -->
+                <div class="metric-card">
+                    <div class="metric-number counter-animation" data-count="85">0</div>
+                    <div class="metric-label">% Fewer Support Tickets</div>
+                    <p class="text-gray-500 text-sm mt-3">password-related issues eliminated</p>
+                </div>
+
+                <!-- Metric 3 -->
+                <div class="metric-card">
+                    <div class="metric-number counter-animation" data-count="2">0</div>
+                    <div class="metric-label">Minute Setup Time</div>
+                    <p class="text-gray-500 text-sm mt-3">from integration to production</p>
+                </div>
+
+                <!-- Metric 4 -->
+                <div class="metric-card">
+                    <div class="metric-number counter-animation" data-count="98">0</div>
+                    <div class="metric-label">% Email Delivery Rate</div>
+                    <p class="text-gray-500 text-sm mt-3">enterprise-grade reliability</p>
+                </div>
+            </div>
+
+            <!-- ROI Calculator -->
+            <div class="mt-20 bg-gray-50 rounded-2xl p-12">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-gray-900 mb-4">Calculate Your ROI</h3>
+                    <p class="text-gray-600">See how much revenue you're losing to password friction right now.</p>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-8 text-center">
+                    <div>
+                        <div class="text-4xl font-black text-red-500 mb-2">$11,500</div>
+                        <div class="text-sm text-gray-600 font-semibold">Monthly revenue lost</div>
+                        <div class="text-xs text-gray-500 mt-1">1,000 signups × 23% friction × $50 value</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-black text-green-500 mb-2">$138K</div>
+                        <div class="text-sm text-gray-600 font-semibold">Annual revenue saved</div>
+                        <div class="text-xs text-gray-500 mt-1">With EasyOTPAuth implementation</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-black text-primary mb-2">4,600%</div>
+                        <div class="text-sm text-gray-600 font-semibold">ROI in first year</div>
+                        <div class="text-xs text-gray-500 mt-1">$138K saved vs $3K investment</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW SECTION: CTA Banner -->
+    <section class="py-20 cta-banner relative overflow-hidden fade-in" id="final-cta">
+        <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center relative z-10">
+            <h2 class="text-5xl font-black text-white mb-8">
+                Stop Losing Revenue to Password Friction
+            </h2>
+            <p class="text-xl text-white mb-12 opacity-95 max-w-3xl mx-auto leading-relaxed">
+                Every day you delay costs you customers. Join 10,000+ developers who've already eliminated password friction 
+                and increased conversions by 3x. Your competitors are already ahead—don't fall further behind.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <a href="/public/login.html" class="bg-white text-primary font-bold py-6 px-12 rounded-lg hover:bg-gray-100 transition-all text-lg inline-flex items-center gap-3 pulse">
+                    <span class="text-2xl">🚀</span> Get Lifetime Access Now
+                </a>
+                <div class="text-white opacity-90">
+                    <div class="text-sm font-semibold">⚡ 2-minute setup</div>
+                    <div class="text-sm">✓ 14-day free trial</div>
+                </div>
+            </div>
+
+            <!-- Trust Indicators -->
+            <div class="mt-16 flex flex-wrap justify-center items-center gap-8 opacity-80">
+                <div class="flex items-center gap-2 text-white">
+                    <span class="text-green-300">✓</span>
+                    <span class="text-sm font-medium">SOC 2 Compliant</span>
+                </div>
+                <div class="flex items-center gap-2 text-white">
+                    <span class="text-green-300">✓</span>
+                    <span class="text-sm font-medium">GDPR Ready</span>
+                </div>
+                <div class="flex items-center gap-2 text-white">
+                    <span class="text-green-300">✓</span>
+                    <span class="text-sm font-medium">99.9% Uptime SLA</span>
+                </div>
+                <div class="flex items-center gap-2 text-white">
+                    <span class="text-green-300">✓</span>
+                    <span class="text-sm font-medium">Enterprise Support</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-16">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
@@ -1075,7 +1448,7 @@
                     <a href="#demo" class="text-gray-400 hover:text-white transition-colors">Demo</a>
                 </div>
                 <p class="text-sm text-gray-500">
-                    © 2025 RapidAuth.pro. All rights reserved.
+                    © 2025 EasyOTPAuth. All rights reserved.
                 </p>
             </div>
         </div>
@@ -1624,6 +1997,217 @@ Thank you!`);
         if (window.location.pathname === '/success' || window.location.search.includes('session_id')) {
             handlePaymentSuccess();
         }
+
+        // =============== NEW ANIMATION FUNCTIONS ===============
+        
+        // Intersection Observer for fade-in animations
+        function initScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all fade-in elements
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Counter animations
+        function animateCounters() {
+            const counters = document.querySelectorAll('.counter-animation');
+            
+            const counterObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = entry.target;
+                        const target = parseInt(counter.dataset.count);
+                        let current = 0;
+                        const increment = target / 100;
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if (current >= target) {
+                                counter.textContent = target + (target === 98 ? '%' : target === 3 ? 'x' : '');
+                                clearInterval(timer);
+                            } else {
+                                counter.textContent = Math.floor(current) + (target === 98 ? '%' : target === 3 ? 'x' : '');
+                            }
+                        }, 20);
+                        
+                        // Unobserve after animation starts
+                        counterObserver.unobserve(counter);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            counters.forEach(counter => {
+                counterObserver.observe(counter);
+            });
+        }
+
+        // Video placeholder interaction
+        function playVideo() {
+            const placeholder = document.querySelector('.video-placeholder');
+            
+            // Create video element or iframe
+            const videoHtml = `
+                <iframe 
+                    src="https://player.vimeo.com/video/placeholder?autoplay=1&title=0&byline=0&portrait=0" 
+                    frameborder="0" 
+                    allow="autoplay; fullscreen; picture-in-picture" 
+                    allowfullscreen
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                    onload="this.style.opacity='1'"
+                    style="opacity: 0; transition: opacity 0.3s ease;"
+                >
+                </iframe>
+            `;
+            
+            // Replace placeholder with video
+            placeholder.innerHTML = videoHtml;
+            placeholder.style.border = 'none';
+            placeholder.style.background = '#000';
+            
+            // Note: In production, replace with actual video URL
+            // For demo purposes, showing placeholder interaction
+            setTimeout(() => {
+                placeholder.innerHTML = `
+                    <div style="color: white; text-align: center; padding: 60px 20px;">
+                        <h3 style="font-size: 24px; margin-bottom: 16px;">🎬 Video Coming Soon</h3>
+                        <p style="opacity: 0.8;">This will show the complete EasyOTPAuth demo video</p>
+                        <button onclick="location.reload()" style="margin-top: 20px; padding: 12px 24px; background: #FFA500; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            ← Back to Placeholder
+                        </button>
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        // Enhanced hover effects for feature cards
+        function initFeatureCardEffects() {
+            const cards = document.querySelectorAll('.hover-lift');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    // Add subtle rotation to icons on hover
+                    const icon = card.querySelector('.feature-icon');
+                    if (icon) {
+                        icon.style.transform = 'scale(1.1) rotate(5deg)';
+                    }
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    const icon = card.querySelector('.feature-icon');
+                    if (icon) {
+                        icon.style.transform = 'scale(1) rotate(0deg)';
+                    }
+                });
+            });
+        }
+
+        // ROI Calculator Enhancement
+        function initROICalculator() {
+            const roiSection = document.querySelector('#success-metrics');
+            let hasAnimated = false;
+            
+            const roiObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !hasAnimated) {
+                        hasAnimated = true;
+                        
+                        // Animate ROI numbers with stagger effect
+                        const roiNumbers = roiSection.querySelectorAll('.text-4xl.font-black');
+                        roiNumbers.forEach((number, index) => {
+                            setTimeout(() => {
+                                number.style.transform = 'scale(1.1)';
+                                number.style.transition = 'transform 0.3s ease';
+                                
+                                setTimeout(() => {
+                                    number.style.transform = 'scale(1)';
+                                }, 300);
+                            }, index * 200);
+                        });
+                    }
+                });
+            }, { threshold: 0.3 });
+            
+            roiObserver.observe(roiSection);
+        }
+
+        // Enhanced CTA Banner Animation
+        function initCTABannerEffects() {
+            const ctaBanner = document.querySelector('.cta-banner');
+            const ctaButton = ctaBanner?.querySelector('.pulse');
+            
+            if (ctaButton) {
+                // Add enhanced pulse effect on scroll into view
+                const ctaObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            ctaButton.style.animation = 'pulse 2s infinite';
+                        } else {
+                            ctaButton.style.animation = 'none';
+                        }
+                    });
+                }, { threshold: 0.5 });
+                
+                ctaObserver.observe(ctaBanner);
+            }
+        }
+
+        // Mobile responsiveness enhancements
+        function initMobileOptimizations() {
+            // Adjust animations for mobile
+            if (window.innerWidth < 768) {
+                // Reduce animation intensity on mobile
+                const style = document.createElement('style');
+                style.textContent = `
+                    .hover-lift:hover {
+                        transform: translateY(-4px) scale(1.01);
+                    }
+                    .video-play-btn {
+                        width: 60px;
+                        height: 60px;
+                        font-size: 24px;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        // Initialize all new features
+        function initEnhancements() {
+            initScrollAnimations();
+            animateCounters();
+            initFeatureCardEffects();
+            initROICalculator();
+            initCTABannerEffects();
+            initMobileOptimizations();
+        }
+
+        // Start enhancements after DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Existing initialization
+            startTypewriter();
+            emailInput.focus();
+            
+            // New enhancements
+            initEnhancements();
+        });
+
+        // Handle window resize for responsive animations
+        window.addEventListener('resize', initMobileOptimizations);
+
+        // Make video function globally available
+        window.playVideo = playVideo;
     </script>
 </body>
 </html>

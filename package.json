@@ -8,7 +8,9 @@
     "dev": "nodemon index.js",
     "build": "echo 'Build complete - ready for Vercel deployment'",
     "vercel-dev": "vercel dev",
-    "deploy": "vercel --prod"
+    "deploy": "vercel --prod",
+    "setup-stripe": "node setup-stripe.js",
+    "test-payment": "node test-payment.js"
   },
   "keywords": [
     "otp",
