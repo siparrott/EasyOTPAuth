@@ -252,6 +252,16 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Serve end-to-end test page
+app.get('/e2e-test', (req, res) => {
+  try {
+    const testPath = path.join(process.cwd(), 'public', 'e2e-test.html');
+    res.sendFile(testPath);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to serve test page' });
+  }
+});
+
 app.post('/license/activate', async (req, res) => {
   if (!process.env.LICENSE_SERVER) {
     return res.json({ active: true });

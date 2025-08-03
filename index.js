@@ -100,6 +100,11 @@ app.get('/email-test', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'email-test.html'));
 });
 
+// Serve end-to-end test page
+app.get('/e2e-test', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'e2e-test.html'));
+});
+
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', branding });
 });

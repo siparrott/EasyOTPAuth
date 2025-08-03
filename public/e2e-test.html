@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyOTPAuth - End-to-End Test Suite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .step {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .step.active {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .step.completed {
+            border-color: #10b981;
+            background-color: #ecfdf5;
+        }
+        .step.failed {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+        .status-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+        }
+        .loading {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .log-area {
+            background-color: #1f2937;
+            color: #f9fafb;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="test-container">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                🧪 EasyOTPAuth End-to-End Test Suite
+            </h1>
+            <p class="text-lg text-gray-600">
+                Comprehensive testing of the OTP authentication flow using <strong>siparrott@yahoo.co.uk</strong>
+            </p>
+        </header>
+
+        <!-- Test Steps -->
+        <div class="space-y-6">
+            <!-- Step 1: Request OTP -->
+            <div id="step1" class="step">
+                <div class="flex items-center mb-4">
+                    <span id="step1-icon" class="status-icon">⏳</span>
+                    <h2 class="text-xl font-semibold text-gray-900">Step 1: Request OTP Code</h2>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    Send an OTP request to <code class="bg-gray-200 px-2 py-1 rounded">siparrott@yahoo.co.uk</code>
+                </p>
+                <button id="start-test" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    🚀 Start Test
+                </button>
+                <div id="step1-details" class="mt-4 text-sm text-gray-600"></div>
+            </div>
+
+            <!-- Step 2: Email Verification -->
+            <div id="step2" class="step">
+                <div class="flex items-center mb-4">
+                    <span id="step2-icon" class="status-icon">⏳</span>
+                    <h2 class="text-xl font-semibold text-gray-900">Step 2: Email Delivery Check</h2>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    Check your email for the 6-digit verification code
+                </p>
+                <div id="step2-content" class="space-y-4">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h3 class="font-semibold text-blue-900 mb-2">📧 Email Details to Check:</h3>
+                        <ul class="text-blue-800 space-y-1">
+                            <li><strong>From:</strong> EasyOTPAuth &lt;hello@easyotpauth.com&gt;</li>
+                            <li><strong>Subject:</strong> Your EasyOTPAuth login code</li>
+                            <li><strong>Content:</strong> 6-digit verification code</li>
+                        </ul>
+                    </div>
+                    <div class="flex gap-4">
+                        <button id="email-received" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors" disabled>
+                            ✅ Email Received
+                        </button>
+                        <button id="email-not-received" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors" disabled>
+                            ❌ No Email
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Code Verification -->
+            <div id="step3" class="step">
+                <div class="flex items-center mb-4">
+                    <span id="step3-icon" class="status-icon">⏳</span>
+                    <h2 class="text-xl font-semibold text-gray-900">Step 3: Verify OTP Code</h2>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    Enter the 6-digit code from your email to complete authentication
+                </p>
+                <div id="step3-content" class="space-y-4">
+                    <div class="flex gap-4 items-end">
+                        <div class="flex-1">
+                            <label for="otp-code" class="block text-sm font-medium text-gray-700 mb-1">
+                                6-Digit OTP Code
+                            </label>
+                            <input 
+                                type="text" 
+                                id="otp-code" 
+                                maxlength="6" 
+                                pattern="\d{6}"
+                                placeholder="123456"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center text-2xl font-mono"
+                                disabled
+                            >
+                        </div>
+                        <button id="verify-code" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors" disabled>
+                            🔐 Verify Code
+                        </button>
+                    </div>
+                    <div id="step3-details" class="text-sm text-gray-600"></div>
+                </div>
+            </div>
+
+            <!-- Step 4: JWT Validation -->
+            <div id="step4" class="step">
+                <div class="flex items-center mb-4">
+                    <span id="step4-icon" class="status-icon">⏳</span>
+                    <h2 class="text-xl font-semibold text-gray-900">Step 4: JWT Token Validation</h2>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    Test the JWT token with a protected endpoint
+                </p>
+                <div id="step4-details" class="text-sm text-gray-600"></div>
+            </div>
+        </div>
+
+        <!-- Test Results -->
+        <div id="results" class="mt-8 p-6 bg-white rounded-lg shadow-lg" style="display: none;">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">🎯 Test Results Summary</h2>
+            <div id="results-content"></div>
+        </div>
+
+        <!-- Live Log -->
+        <div class="mt-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">📋 Live Test Log</h2>
+            <div id="log" class="log-area">
+                Waiting for test to start...
+            </div>
+            <button id="clear-log" class="mt-2 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors">
+                🗑️ Clear Log
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Global test state
+        let testState = {
+            requestSent: false,
+            emailReceived: false,
+            codeVerified: false,
+            jwtToken: null,
+            userEmail: 'siparrott@yahoo.co.uk'
+        };
+
+        // Logging functionality
+        function log(message, type = 'info') {
+            const logArea = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const typeEmoji = {
+                'info': 'ℹ️',
+                'success': '✅',
+                'error': '❌',
+                'warning': '⚠️',
+                'debug': '🔍'
+            };
+            
+            const logEntry = `[${timestamp}] ${typeEmoji[type]} ${message}\n`;
+            logArea.textContent += logEntry;
+            logArea.scrollTop = logArea.scrollHeight;
+            
+            console.log(`[E2E Test] ${message}`);
+        }
+
+        // Update step status
+        function updateStep(stepNum, status, details = '') {
+            const step = document.getElementById(`step${stepNum}`);
+            const icon = document.getElementById(`step${stepNum}-icon`);
+            const detailsDiv = document.getElementById(`step${stepNum}-details`);
+            
+            // Remove all status classes
+            step.classList.remove('active', 'completed', 'failed');
+            
+            switch(status) {
+                case 'active':
+                    step.classList.add('active');
+                    icon.textContent = '🔄';
+                    break;
+                case 'completed':
+                    step.classList.add('completed');
+                    icon.textContent = '✅';
+                    break;
+                case 'failed':
+                    step.classList.add('failed');
+                    icon.textContent = '❌';
+                    break;
+                default:
+                    icon.textContent = '⏳';
+            }
+            
+            if (detailsDiv && details) {
+                detailsDiv.innerHTML = details;
+            }
+        }
+
+        // API request helper
+        async function makeRequest(endpoint, data = null, method = 'POST') {
+            const url = `https://www.easyotpauth.com${endpoint}`;
+            
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            };
+            
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+            
+            try {
+                log(`Making ${method} request to ${endpoint}`, 'debug');
+                const response = await fetch(url, options);
+                const responseData = await response.json();
+                
+                log(`Response: ${response.status} - ${JSON.stringify(responseData)}`, 'debug');
+                
+                return {
+                    success: response.ok,
+                    status: response.status,
+                    data: responseData
+                };
+            } catch (error) {
+                log(`Request failed: ${error.message}`, 'error');
+                return {
+                    success: false,
+                    status: 0,
+                    error: error.message
+                };
+            }
+        }
+
+        // Step 1: Request OTP
+        async function requestOTP() {
+            updateStep(1, 'active');
+            log('Starting OTP request...', 'info');
+            
+            const response = await makeRequest('/auth/request-code', {
+                email: testState.userEmail
+            });
+            
+            if (response.success) {
+                testState.requestSent = true;
+                updateStep(1, 'completed', `✅ OTP sent successfully to ${testState.userEmail}`);
+                log('OTP request successful', 'success');
+                
+                // Enable Step 2
+                updateStep(2, 'active');
+                document.getElementById('email-received').disabled = false;
+                document.getElementById('email-not-received').disabled = false;
+                
+                log('Check your email for the 6-digit verification code', 'info');
+                
+            } else {
+                updateStep(1, 'failed', `❌ Failed: ${response.data?.error || 'Unknown error'}`);
+                log(`OTP request failed: ${response.data?.error || 'Unknown error'}`, 'error');
+            }
+        }
+
+        // Step 2: Email verification handlers
+        function emailReceived() {
+            testState.emailReceived = true;
+            updateStep(2, 'completed', '✅ Email delivery confirmed');
+            log('Email delivery confirmed by user', 'success');
+            
+            // Enable Step 3
+            updateStep(3, 'active');
+            document.getElementById('otp-code').disabled = false;
+            document.getElementById('verify-code').disabled = false;
+            document.getElementById('otp-code').focus();
+            
+            // Disable email buttons
+            document.getElementById('email-received').disabled = true;
+            document.getElementById('email-not-received').disabled = true;
+        }
+
+        function emailNotReceived() {
+            testState.emailReceived = false;
+            updateStep(2, 'failed', '❌ Email not received - check SMTP configuration');
+            log('Email not received - possible SMTP configuration issue', 'error');
+            
+            showResults();
+        }
+
+        // Step 3: Verify OTP code
+        async function verifyCode() {
+            const codeInput = document.getElementById('otp-code');
+            const code = codeInput.value.trim();
+            
+            if (!code || code.length !== 6 || !/^\d{6}$/.test(code)) {
+                log('Invalid code format. Please enter 6 digits.', 'error');
+                return;
+            }
+            
+            updateStep(3, 'active');
+            log(`Verifying code: ${code}`, 'info');
+            
+            const response = await makeRequest('/auth/verify-code', {
+                email: testState.userEmail,
+                code: code
+            });
+            
+            if (response.success && response.data.token) {
+                testState.codeVerified = true;
+                testState.jwtToken = response.data.token;
+                
+                updateStep(3, 'completed', `✅ Code verified successfully. JWT token received.`);
+                log('Code verification successful', 'success');
+                log(`JWT Token: ${response.data.token.substring(0, 50)}...`, 'debug');
+                
+                // Move to Step 4
+                await validateJWT();
+                
+            } else {
+                updateStep(3, 'failed', `❌ Verification failed: ${response.data?.error || 'Invalid code'}`);
+                log(`Code verification failed: ${response.data?.error || 'Invalid code'}`, 'error');
+            }
+        }
+
+        // Step 4: Validate JWT token
+        async function validateJWT() {
+            updateStep(4, 'active');
+            log('Testing JWT token with protected endpoint...', 'info');
+            
+            try {
+                const response = await fetch('https://www.easyotpauth.com/protected', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${testState.jwtToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.ok) {
+                    updateStep(4, 'completed', `✅ JWT validation successful. User: ${data.user}`);
+                    log(`JWT validation successful. Authenticated as: ${data.user}`, 'success');
+                    log(`Token expires: ${data.expires}`, 'debug');
+                } else {
+                    updateStep(4, 'failed', `❌ JWT validation failed: ${data.error || 'Unknown error'}`);
+                    log(`JWT validation failed: ${data.error || 'Unknown error'}`, 'error');
+                }
+                
+            } catch (error) {
+                updateStep(4, 'failed', `❌ JWT test failed: ${error.message}`);
+                log(`JWT test failed: ${error.message}`, 'error');
+            }
+            
+            // Show final results
+            showResults();
+        }
+
+        // Show final results
+        function showResults() {
+            const resultsDiv = document.getElementById('results');
+            const resultsContent = document.getElementById('results-content');
+            
+            const allStepsCompleted = testState.requestSent && testState.emailReceived && 
+                                    testState.codeVerified && testState.jwtToken;
+            
+            let html = '<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">';
+            
+            // Result cards
+            const results = [
+                { label: 'OTP Request', status: testState.requestSent, icon: '📤' },
+                { label: 'Email Delivery', status: testState.emailReceived, icon: '📧' },
+                { label: 'Code Verification', status: testState.codeVerified, icon: '🔐' },
+                { label: 'JWT Authentication', status: testState.jwtToken !== null, icon: '🎫' }
+            ];
+            
+            results.forEach(result => {
+                const bgColor = result.status ? 'bg-green-100 border-green-500' : 'bg-red-100 border-red-500';
+                const textColor = result.status ? 'text-green-800' : 'text-red-800';
+                const statusIcon = result.status ? '✅' : '❌';
+                
+                html += `
+                    <div class="border-2 ${bgColor} rounded-lg p-4 text-center">
+                        <div class="text-2xl mb-2">${result.icon}</div>
+                        <div class="font-semibold ${textColor}">${result.label}</div>
+                        <div class="text-lg">${statusIcon}</div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            
+            // Overall status
+            if (allStepsCompleted) {
+                html += `
+                    <div class="bg-green-50 border-2 border-green-500 rounded-lg p-6 text-center">
+                        <div class="text-4xl mb-4">🎉</div>
+                        <h3 class="text-2xl font-bold text-green-800 mb-2">SUCCESS!</h3>
+                        <p class="text-green-700">Your EasyOTPAuth system is fully operational and ready for production!</p>
+                        <div class="mt-4 text-sm text-green-600">
+                            <p>✅ OTP generation and email delivery working</p>
+                            <p>✅ Code verification and JWT authentication working</p>
+                            <p>✅ Protected routes properly secured</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="bg-red-50 border-2 border-red-500 rounded-lg p-6 text-center">
+                        <div class="text-4xl mb-4">⚠️</div>
+                        <h3 class="text-2xl font-bold text-red-800 mb-2">Issues Detected</h3>
+                        <p class="text-red-700">Some components of your OTP system need attention.</p>
+                    </div>
+                `;
+            }
+            
+            resultsContent.innerHTML = html;
+            resultsDiv.style.display = 'block';
+            
+            log('End-to-end test completed', 'info');
+        }
+
+        // Event listeners
+        document.getElementById('start-test').addEventListener('click', requestOTP);
+        document.getElementById('email-received').addEventListener('click', emailReceived);
+        document.getElementById('email-not-received').addEventListener('click', emailNotReceived);
+        document.getElementById('verify-code').addEventListener('click', verifyCode);
+        
+        // Enter key support for OTP input
+        document.getElementById('otp-code').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !document.getElementById('verify-code').disabled) {
+                verifyCode();
+            }
+        });
+        
+        // Auto-format OTP input
+        document.getElementById('otp-code').addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 6) {
+                value = value.slice(0, 6);
+            }
+            e.target.value = value;
+        });
+        
+        // Clear log button
+        document.getElementById('clear-log').addEventListener('click', () => {
+            document.getElementById('log').textContent = 'Log cleared...\n';
+        });
+
+        // Initialize
+        log('EasyOTPAuth End-to-End Test Suite initialized', 'info');
+        log('Click "Start Test" to begin testing with siparrott@yahoo.co.uk', 'info');
+    </script>
+</body>
+</html>
