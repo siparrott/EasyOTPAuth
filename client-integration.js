@@ -273,7 +273,7 @@ class EasyOTPAuth {
     if (!document.getElementById('easyotp-styles')) {
       const style = document.createElement('style');
       style.id = 'easyotp-styles';
-      style.textContent = \`
+      style.textContent = `
         .easyotp-widget {
           max-width: 400px;
           margin: 20px auto;
@@ -418,7 +418,7 @@ class EasyOTPAuth {
             padding: 20px;
           }
         }
-      \`;
+      `;
       document.head.appendChild(style);
     }
 
