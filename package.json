@@ -10,7 +10,10 @@
     "vercel-dev": "vercel dev",
     "deploy": "vercel --prod",
     "setup-stripe": "node setup-stripe.js",
-    "test-payment": "node test-payment.js"
+    "test-payment": "node test-payment.js",
+    "test-smtp": "node test-smtp.js",
+    "test-integration": "node test-client-integration.js",
+    "test-email": "node test-smtp.js && echo 'SMTP test completed - check siparrott@yahoo.co.uk'"
   },
   "keywords": [
     "otp",
