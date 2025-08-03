@@ -110,9 +110,16 @@ app.get('/e2e-test', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'e2e-test.html'));
 });
 
-// Serve end-to-end test page
-app.get('/e2e-test', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'e2e-test.html'));
+// Serve client demo page
+app.get('/client-demo', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'client-demo.html'));
+});
+
+// Serve client integration script with proper MIME type
+app.get('/client-integration.js', (req, res) => {
+  res.setHeader('Content-Type', 'application/javascript');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.sendFile(path.join(__dirname, 'client-integration.js'));
 });
 
 app.get('/health', (req, res) => {
@@ -291,6 +298,109 @@ app.get('/protected', (req, res) => {
   } catch {
     res.status(401).json({ error: 'Unauthorized' });
   }
+});
+
+// New API endpoints for client integration
+app.post('/api/send-otp', otpLimiter, async (req, res) => {
+  const { email } = req.body || {};
+  
+  // Enable CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    return res.status(400).json({ success: false, error: 'Invalid email address.' });
+  }
+
+  const code = generateCode();
+  const hash = await bcrypt.hash(code, 10);
+  await storeOtp(email.toLowerCase(), hash);
+
+  try {
+    const html = htmlTemplate({ code, branding });
+    const text = textTemplate({ code, branding });
+    
+    await transporter.sendMail({
+      from: process.env.MAIL_FROM || `"${branding.appName}" <${branding.supportEmail}>`,
+      to: email,
+      subject: `Your ${branding.appName} login code`,
+      text,
+      html
+    });
+
+    logger.info(`OTP sent to ${email}`);
+    res.json({ success: true, message: 'OTP sent successfully' });
+  } catch (err) {
+    logger.error('Email sending error:', err);
+    return res.status(500).json({ 
+      success: false, 
+      error: 'Failed to send verification email.' 
+    });
+  }
+});
+
+app.post('/api/verify-otp', async (req, res) => {
+  const { email, otp } = req.body || {};
+  
+  // Enable CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  if (!email || !otp) {
+    return res.status(400).json({ success: false, error: 'Email and OTP are required.' });
+  }
+
+  if (!/^\d{6}$/.test(otp)) {
+    return res.status(400).json({ success: false, error: 'OTP must be 6 digits.' });
+  }
+
+  const record = await fetchOtp(email.toLowerCase());
+  if (!record) {
+    return res.status(400).json({ success: false, error: 'Code expired or not found.' });
+  }
+
+  const match = await bcrypt.compare(otp, record.hash);
+  if (!match) {
+    return res.status(400).json({ success: false, error: 'Invalid verification code.' });
+  }
+
+  const token = jwt.sign(
+    { 
+      email, 
+      authenticated: true,
+      timestamp: Date.now()
+    }, 
+    process.env.JWT_SECRET || 'dev-secret', 
+    { expiresIn: '7d' }
+  );
+  
+  logger.info(`User authenticated: ${email}`);
+  res.json({ 
+    success: true, 
+    message: 'Authentication successful',
+    token, 
+    user: {
+      email,
+      authenticated: true
+    }
+  });
+});
+
+// Handle CORS preflight requests
+app.options('/api/send-otp', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.status(200).end();
+});
+
+app.options('/api/verify-otp', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.status(200).end();
 });
 
 const PORT = process.env.PORT || 3000;
