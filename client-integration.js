@@ -40,7 +40,37 @@ class EasyOTPAuth {
         body: JSON.stringify({ email }),
       });
 
-      const data = await response.json();
+      // Check if response is ok before parsing JSON
+      if (!response.ok) {
+        // Try to parse error as JSON first
+        let errorData;
+        const contentType = response.headers.get('content-type');
+        
+        if (contentType && contentType.includes('application/json')) {
+          try {
+            errorData = await response.json();
+          } catch (parseError) {
+            console.error("Failed to parse error response as JSON:", parseError);
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+        } else {
+          // Response is not JSON (likely HTML error page)
+          const textResponse = await response.text();
+          console.error("Non-JSON error response:", textResponse);
+          throw new Error(`Server error (${response.status}): Please check server configuration`);
+        }
+        
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      // Parse successful JSON response
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        console.error("Failed to parse success response as JSON:", parseError);
+        throw new Error("Invalid response format from server");
+      }
       
       if (data.success) {
         console.log("✅ OTP sent successfully:", data);
@@ -52,7 +82,7 @@ class EasyOTPAuth {
       }
     } catch (err) {
       console.error("❌ Network error requesting OTP:", err);
-      this.showMessage("Network error. Please try again.", "error");
+      this.showMessage(err.message || "Network error. Please try again.", "error");
     } finally {
       this.isRequestingOTP = false;
     }
@@ -88,7 +118,37 @@ class EasyOTPAuth {
         body: JSON.stringify({ email, otp }),
       });
 
-      const data = await response.json();
+      // Check if response is ok before parsing JSON
+      if (!response.ok) {
+        // Try to parse error as JSON first
+        let errorData;
+        const contentType = response.headers.get('content-type');
+        
+        if (contentType && contentType.includes('application/json')) {
+          try {
+            errorData = await response.json();
+          } catch (parseError) {
+            console.error("Failed to parse error response as JSON:", parseError);
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+        } else {
+          // Response is not JSON (likely HTML error page)
+          const textResponse = await response.text();
+          console.error("Non-JSON error response:", textResponse);
+          throw new Error(`Server error (${response.status}): Please check server configuration`);
+        }
+        
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      // Parse successful JSON response
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        console.error("Failed to parse success response as JSON:", parseError);
+        throw new Error("Invalid response format from server");
+      }
       
       if (data.success) {
         console.log("✅ Authentication successful:", data);
@@ -112,7 +172,7 @@ class EasyOTPAuth {
       }
     } catch (err) {
       console.error("❌ Network error verifying OTP:", err);
-      this.showMessage("Network error. Please try again.", "error");
+      this.showMessage(err.message || "Network error. Please try again.", "error");
     } finally {
       this.isVerifyingOTP = false;
     }
