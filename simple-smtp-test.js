@@ -1,0 +1,141 @@
+// Simple SMTP test using existing configuration
+require('dotenv').config();
+
+console.log('🔧 EasyOTPAuth SMTP Configuration Test');
+console.log('=====================================\n');
+
+// Display configuration status
+console.log('📋 Environment Variables:');
+console.log(`   SMTP_HOST: ${process.env.SMTP_HOST ? '✅ Set' : '❌ Missing'}`);
+console.log(`   SMTP_PORT: ${process.env.SMTP_PORT ? '✅ Set' : '❌ Missing'}`);
+console.log(`   SMTP_SECURE: ${process.env.SMTP_SECURE ? '✅ Set' : '❌ Missing'}`);
+console.log(`   SMTP_USER: ${process.env.SMTP_USER ? '✅ Set' : '❌ Missing'}`);
+console.log(`   SMTP_PASS: ${process.env.SMTP_PASS ? '✅ Set' : '❌ Missing'}`);
+console.log(`   MAIL_FROM: ${process.env.MAIL_FROM ? '✅ Set' : '❌ Missing'}`);
+console.log(`   JWT_SECRET: ${process.env.JWT_SECRET ? '✅ Set' : '❌ Missing'}`);
+console.log('');
+
+// Check critical variables
+const required = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS'];
+const missing = required.filter(key => !process.env[key]);
+
+if (missing.length > 0) {
+  console.log('❌ Missing Required Variables:', missing.join(', '));
+  console.log('');
+  console.log('💡 Add these to your .env file:');
+  console.log('SMTP_HOST=smtp.easyname.com');
+  console.log('SMTP_PORT=465');
+  console.log('SMTP_SECURE=true');
+  console.log('SMTP_USER=30840mail16');
+  console.log('SMTP_PASS=HoveBN41!');
+  console.log('MAIL_FROM="EasyOTPAuth <hello@easyotpauth.com>"');
+  console.log('JWT_SECRET=EasyOTPAuth-2025-SuperSecure-JWT-Secret-Change-In-Production');
+  console.log('');
+  process.exit(1);
+}
+
+console.log('✅ All SMTP variables are configured!');
+console.log('');
+
+// Test SMTP connection
+console.log('🔍 Testing SMTP Connection...');
+try {
+  const nodemailer = require('nodemailer');
+  
+  const transporter = nodemailer.createTransporter({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT) || 465,
+    secure: process.env.SMTP_SECURE === 'true' || true,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+
+  // Test connection
+  transporter.verify((error, success) => {
+    if (error) {
+      console.log('❌ SMTP Connection Failed:');
+      console.log('   Error:', error.message);
+      console.log('');
+      console.log('💡 Troubleshooting Tips:');
+      console.log('   1. Verify SMTP credentials are correct');
+      console.log('   2. Check if your email provider requires app passwords');
+      console.log('   3. Ensure firewall allows SMTP connections');
+      console.log('   4. Try port 587 with STARTTLS instead of 465');
+    } else {
+      console.log('✅ SMTP Connection Successful!');
+      console.log('');
+      
+      // Send test email
+      console.log('📧 Sending test email to siparrott@yahoo.co.uk...');
+      
+      transporter.sendMail({
+        from: process.env.MAIL_FROM || `"EasyOTPAuth Test" <${process.env.SMTP_USER}>`,
+        to: "siparrott@yahoo.co.uk",
+        subject: "✅ EasyOTPAuth SMTP Test Successful",
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="background: #10b981; color: white; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
+              <h1 style="margin: 0;">✅ SMTP Test Successful!</h1>
+            </div>
+            <p style="font-size: 16px;">Your EasyOTPAuth SMTP configuration is working perfectly!</p>
+            <div style="background: #f0f9ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <h3>📋 Configuration Details:</h3>
+              <ul>
+                <li>SMTP Host: ${process.env.SMTP_HOST}</li>
+                <li>SMTP Port: ${process.env.SMTP_PORT}</li>
+                <li>Test Time: ${new Date().toISOString()}</li>
+              </ul>
+            </div>
+            <div style="background: #dbeafe; padding: 15px; border-radius: 8px;">
+              <strong>🚀 Next Steps:</strong>
+              <ol>
+                <li>Set these same variables in your Vercel dashboard</li>
+                <li>Test live system at: <a href="https://www.easyotpauth.com/personal-test">https://www.easyotpauth.com/personal-test</a></li>
+                <li>Try client integration: <a href="https://www.easyotpauth.com/client-demo">https://www.easyotpauth.com/client-demo</a></li>
+              </ol>
+            </div>
+          </div>
+        `,
+        text: `
+✅ EasyOTPAuth SMTP Test Successful!
+
+Your SMTP configuration is working correctly.
+
+Configuration Details:
+- SMTP Host: ${process.env.SMTP_HOST}
+- SMTP Port: ${process.env.SMTP_PORT}
+- Test Time: ${new Date().toISOString()}
+
+Next Steps:
+1. Set these same variables in your Vercel dashboard
+2. Test live system at: https://www.easyotpauth.com/personal-test
+3. Try client integration: https://www.easyotpauth.com/client-demo
+
+Generated by EasyOTPAuth Local SMTP Test
+        `
+      }, (err, info) => {
+        if (err) {
+          console.log('❌ Failed to send test email:');
+          console.log('   Error:', err.message);
+        } else {
+          console.log('🎉 Test email sent successfully!');
+          console.log(`   Message ID: ${info.messageId}`);
+          console.log('');
+          console.log('📧 Check siparrott@yahoo.co.uk for the test email');
+          console.log('');
+          console.log('✅ SMTP TEST PASSED - Ready for production!');
+          console.log('🚀 Set the same environment variables in Vercel dashboard');
+        }
+        process.exit(0);
+      });
+    }
+  });
+
+} catch (error) {
+  console.log('❌ Error loading nodemailer:', error.message);
+  console.log('');
+  console.log('💡 Try running: npm install');
+  process.exit(1);
+}
