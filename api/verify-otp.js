@@ -51,6 +51,12 @@ export default async function handler(req, res) {
 
       const storedData = global.otpStore.get(email.toLowerCase());
 
+      // 🧪 DEBUG LOGGING (remove in production)
+      console.log(`🔍 Looking for OTP for: ${email.toLowerCase()}`);
+      console.log(`📊 Found in store:`, storedData);
+      console.log(`📊 Current OTP store:`, global.otpStore);
+      console.log(`🔄 Comparing OTP: "${otp}" vs "${storedData?.otp}"`);
+
       if (!storedData) {
         console.log(`❌ No OTP found for email: ${email}`);
         return res.status(400).json({ success: false, error: "No OTP found for this email. Please request a new code." });

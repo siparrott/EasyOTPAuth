@@ -53,6 +53,9 @@ export default async function handler(req, res) {
       expires: Date.now() + 10 * 60 * 1000 // 10 minutes
     });
 
+    // 🧪 DEBUG LOGGING (remove in production)
+    console.log(`🔄 Generated OTP for ${email}: ${otp}`);
+    console.log(`📊 Current OTP store:`, global.otpStore);
     console.log(`🔄 Attempting to send OTP to: ${email}`);
     console.log(`📧 SMTP Config: ${process.env.SMTP_HOST}:${process.env.SMTP_PORT || 465}`);
 
