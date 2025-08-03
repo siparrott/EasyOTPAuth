@@ -243,6 +243,34 @@ app.get('/', (req, res) => {
   }
 });
 
+// Serve test pages
+app.get('/personal-test', (req, res) => {
+  try {
+    const testPath = path.join(process.cwd(), 'public', 'personal-test.html');
+    res.sendFile(testPath);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to serve test page' });
+  }
+});
+
+app.get('/e2e-test', (req, res) => {
+  try {
+    const testPath = path.join(process.cwd(), 'public', 'e2e-test.html');
+    res.sendFile(testPath);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to serve test page' });
+  }
+});
+
+app.get('/email-test', (req, res) => {
+  try {
+    const testPath = path.join(process.cwd(), 'public', 'email-test.html');
+    res.sendFile(testPath);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to serve test page' });
+  }
+});
+
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 

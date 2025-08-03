@@ -100,6 +100,16 @@ app.get('/email-test', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'email-test.html'));
 });
 
+// Serve personal test page
+app.get('/personal-test', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'personal-test.html'));
+});
+
+// Serve E2E test page
+app.get('/e2e-test', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'e2e-test.html'));
+});
+
 // Serve end-to-end test page
 app.get('/e2e-test', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'e2e-test.html'));
