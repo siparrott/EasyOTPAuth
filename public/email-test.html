@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyOTPAuth - Email Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">Email Configuration Test</h1>
+        
+        <!-- Configuration Check -->
+        <div class="bg-white p-6 rounded-lg shadow mb-8">
+            <h2 class="text-xl font-semibold mb-4">1. Check Configuration</h2>
+            <button onclick="checkConfig()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Check Email Config
+            </button>
+            <div id="configResult" class="mt-4"></div>
+        </div>
+
+        <!-- Email Test -->
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold mb-4">2. Test Email Sending</h2>
+            <div class="flex gap-4">
+                <input 
+                    type="email" 
+                    id="testEmail" 
+                    placeholder="Enter your email" 
+                    class="flex-1 px-3 py-2 border border-gray-300 rounded"
+                    value=""
+                >
+                <button onclick="sendTestEmail()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                    Send Test Email
+                </button>
+            </div>
+            <div id="testResult" class="mt-4"></div>
+        </div>
+    </div>
+
+    <script>
+        async function checkConfig() {
+            const resultDiv = document.getElementById('configResult');
+            resultDiv.innerHTML = '<p class="text-gray-600">Checking configuration...</p>';
+            
+            try {
+                const response = await fetch('/email-config-test');
+                const data = await response.json();
+                
+                let html = '<h3 class="font-semibold text-lg mb-2">Configuration Status:</h3>';
+                html += '<ul class="space-y-1">';
+                
+                Object.entries(data.config).forEach(([key, value]) => {
+                    const status = value === 'missing' ? '❌' : '✅';
+                    const color = value === 'missing' ? 'text-red-600' : 'text-green-600';
+                    html += `<li class="${color}">${status} ${key}: ${value}</li>`;
+                });
+                
+                html += '</ul>';
+                
+                if (data.issues.length > 0) {
+                    html += `<p class="text-red-600 mt-4">Missing: ${data.issues.join(', ')}</p>`;
+                } else {
+                    html += '<p class="text-green-600 mt-4">All configuration variables are set!</p>';
+                }
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="text-red-600">Error: ${error.message}</p>`;
+            }
+        }
+
+        async function sendTestEmail() {
+            const email = document.getElementById('testEmail').value;
+            const resultDiv = document.getElementById('testResult');
+            
+            if (!email) {
+                resultDiv.innerHTML = '<p class="text-red-600">Please enter an email address</p>';
+                return;
+            }
+            
+            resultDiv.innerHTML = '<p class="text-gray-600">Sending test email...</p>';
+            
+            try {
+                const response = await fetch('/test-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <p class="text-green-600">✅ Test email sent successfully!</p>
+                        <p class="text-sm text-gray-600">Message ID: ${data.messageId}</p>
+                        <p class="text-sm text-gray-600">Check your inbox and spam folder</p>
+                    `;
+                } else {
+                    let errorDetails = '';
+                    if (data.details) {
+                        errorDetails = `
+                            <details class="mt-2">
+                                <summary class="cursor-pointer text-sm">Error Details</summary>
+                                <pre class="text-xs bg-gray-100 p-2 mt-1 rounded">${JSON.stringify(data.details, null, 2)}</pre>
+                            </details>
+                        `;
+                    }
+                    resultDiv.innerHTML = `
+                        <p class="text-red-600">❌ ${data.error}</p>
+                        ${errorDetails}
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="text-red-600">Network error: ${error.message}</p>`;
+            }
+        }
+
+        // Auto-check config on page load
+        window.addEventListener('load', checkConfig);
+    </script>
+</body>
+</html>

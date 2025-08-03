@@ -95,6 +95,11 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Serve email test page
+app.get('/email-test', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'email-test.html'));
+});
+
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', branding });
 });
@@ -115,6 +120,54 @@ app.get('/email-config-test', (req, res) => {
     config,
     issues: Object.entries(config).filter(([key, value]) => value === 'missing').map(([key]) => key)
   });
+});
+
+// Email test endpoint
+app.post('/test-email', async (req, res) => {
+  const { email } = req.body || {};
+  
+  if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    return res.status(400).json({ error: 'Valid email required.' });
+  }
+
+  try {
+    // Test SMTP connection first
+    await transporter.verify();
+    logger.info('SMTP connection verified successfully');
+    
+    // Send test email
+    const result = await transporter.sendMail({
+      from: process.env.MAIL_FROM || '"EasyOTPAuth" <hello@easyotpauth.com>',
+      to: email,
+      subject: 'EasyOTPAuth - Email Test',
+      html: `
+        <h2>Email Configuration Test</h2>
+        <p>If you received this email, your SMTP configuration is working correctly!</p>
+        <p>Timestamp: ${new Date().toISOString()}</p>
+        <p>Server: ${process.env.SMTP_HOST || 'Not configured'}</p>
+      `,
+      text: `EasyOTPAuth Email Test - If you received this, SMTP is working! Timestamp: ${new Date().toISOString()}`
+    });
+    
+    logger.info('Test email sent successfully:', result.messageId);
+    res.json({ 
+      success: true, 
+      message: 'Test email sent successfully',
+      messageId: result.messageId 
+    });
+    
+  } catch (err) {
+    logger.error('Email test failed:', err);
+    res.status(500).json({ 
+      error: 'Email test failed',
+      details: {
+        message: err.message,
+        code: err.code,
+        command: err.command,
+        response: err.response
+      }
+    });
+  }
 });
 
 app.post('/license/activate', async (req, res) => {
