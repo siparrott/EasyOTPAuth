@@ -8,7 +8,7 @@ Your EasyOTPAuth application has been configured with the following SMTP setting
 - **Port**: 465
 - **Security**: SSL/TLS
 - **Email**: hello@easyotpauth.com
-- **Username**: 30840mail16
+- **Username**: [CONFIGURED_IN_VERCEL]
 
 ## Local Development Setup
 
@@ -33,8 +33,8 @@ Add the following environment variables exactly as shown:
 | `SMTP_HOST` | `smtp.easyname.com` |
 | `SMTP_PORT` | `465` |
 | `SMTP_SECURE` | `true` |
-| `SMTP_USER` | `30840mail16` |
-| `SMTP_PASS` | `HoveBN41!` |
+| `SMTP_USER` | `[YOUR_SMTP_USERNAME]` |
+| `SMTP_PASS` | `[YOUR_SMTP_PASSWORD]` |
 | `MAIL_FROM` | `"EasyOTPAuth <hello@easyotpauth.com>"` |
 | `JWT_SECRET` | `EasyOTPAuth-2025-SuperSecure-JWT-Secret-Change-In-Production` |
 | `NODE_ENV` | `production` |

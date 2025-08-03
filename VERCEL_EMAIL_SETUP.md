@@ -21,8 +21,8 @@ Add these **exact** environment variables (case-sensitive):
 | `SMTP_HOST` | `smtp.easyname.com` | Production, Preview, Development |
 | `SMTP_PORT` | `465` | Production, Preview, Development |
 | `SMTP_SECURE` | `true` | Production, Preview, Development |
-| `SMTP_USER` | `30840mail16` | Production, Preview, Development |
-| `SMTP_PASS` | `HoveBN41!` | Production, Preview, Development |
+| `SMTP_USER` | `[YOUR_SMTP_USERNAME]` | Production, Preview, Development |
+| `SMTP_PASS` | `[YOUR_SMTP_PASSWORD]` | Production, Preview, Development |
 | `MAIL_FROM` | `"EasyOTPAuth <hello@easyotpauth.com>"` | Production, Preview, Development |
 | `JWT_SECRET` | `EasyOTPAuth-2025-SuperSecure-JWT-Secret-Change-In-Production` | Production, Preview, Development |
 | `NODE_ENV` | `production` | Production |
@@ -73,8 +73,8 @@ After redeployment:
 
 1. **Check Easyname SMTP Settings**:
    - Verify SMTP is enabled in your Easyname account
-   - Confirm username: `30840mail16`
-   - Confirm password: `HoveBN41!`
+   - Confirm username: `[YOUR_SMTP_USERNAME]`
+   - Confirm password: `[YOUR_SMTP_PASSWORD]`
    - Confirm server: `smtp.easyname.com`
    - Confirm port: `465` with SSL
 
@@ -112,10 +112,10 @@ vercel env add SMTP_SECURE
 # Enter: true
 
 vercel env add SMTP_USER
-# Enter: 30840mail16
+# Enter: [YOUR_SMTP_USERNAME]
 
 vercel env add SMTP_PASS
-# Enter: HoveBN41!
+# Enter: [YOUR_SMTP_PASSWORD]
 
 vercel env add MAIL_FROM
 # Enter: "EasyOTPAuth <hello@easyotpauth.com>"
