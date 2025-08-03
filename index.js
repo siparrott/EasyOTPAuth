@@ -99,6 +99,24 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', branding });
 });
 
+// Diagnostic endpoint for email configuration
+app.get('/email-config-test', (req, res) => {
+  const config = {
+    smtp_host: process.env.SMTP_HOST ? 'configured' : 'missing',
+    smtp_port: process.env.SMTP_PORT ? process.env.SMTP_PORT : 'missing',
+    smtp_secure: process.env.SMTP_SECURE ? process.env.SMTP_SECURE : 'missing',
+    smtp_user: process.env.SMTP_USER ? 'configured' : 'missing',
+    smtp_pass: process.env.SMTP_PASS ? 'configured' : 'missing',
+    mail_from: process.env.MAIL_FROM ? process.env.MAIL_FROM : 'missing'
+  };
+  
+  res.json({
+    status: 'Email configuration check',
+    config,
+    issues: Object.entries(config).filter(([key, value]) => value === 'missing').map(([key]) => key)
+  });
+});
+
 app.post('/license/activate', async (req, res) => {
   if (!process.env.LICENSE_SERVER) {
     return res.json({ active: true });
@@ -146,6 +164,14 @@ app.post('/auth/request-code', otpLimiter, async (req, res) => {
   try {
     const html = otpHtmlTemplate({ code, branding });
     const text = otpTextTemplate({ code, branding });
+    
+    // Log email configuration for debugging
+    logger.info(`Attempting to send email to: ${email}`);
+    logger.info(`SMTP Host: ${process.env.SMTP_HOST || 'undefined'}`);
+    logger.info(`SMTP Port: ${process.env.SMTP_PORT || 'undefined'}`);
+    logger.info(`SMTP User: ${process.env.SMTP_USER || 'undefined'}`);
+    logger.info(`Mail From: ${process.env.MAIL_FROM || `"${branding.appName}" <${branding.supportEmail}>`}`);
+    
     await transporter.sendMail({
       from: process.env.MAIL_FROM || `"${branding.appName}" <${branding.supportEmail}>`,
       to: email,
@@ -153,9 +179,20 @@ app.post('/auth/request-code', otpLimiter, async (req, res) => {
       text,
       html
     });
+    
+    logger.info(`Email sent successfully to: ${email}`);
   } catch (err) {
-    logger.error(err);
-    return res.status(500).json({ error: 'Failed to send email.' });
+    logger.error('Email sending failed:', err);
+    logger.error('Error details:', {
+      message: err.message,
+      code: err.code,
+      command: err.command,
+      response: err.response
+    });
+    return res.status(500).json({ 
+      error: 'Failed to send email.',
+      details: process.env.NODE_ENV === 'development' ? err.message : 'Email service configuration error'
+    });
   }
 
   res.json({ message: 'sent' });
