@@ -537,7 +537,6 @@ async function subscribeToPlan(planType, priceId) {
 <html>
 <head>
     <title>EasyOTPAuth Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50">
     <div class="max-w-6xl mx-auto px-6 py-8" id="dashboard">
