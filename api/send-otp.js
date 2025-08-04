@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { otpStore } from "../utils/supabase-otp.js";
 
 export default async function handler(req, res) {
   try {
@@ -42,20 +43,12 @@ export default async function handler(req, res) {
 
     const otp = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
 
-    // Store OTP in global memory for demo (replace with Redis/DB in production)
-    if (!global.otpStore) {
-      global.otpStore = new Map();
-    }
-    
-    // Store with expiration (10 minutes)
-    global.otpStore.set(email.toLowerCase(), {
-      otp: otp.toString(),
-      expires: Date.now() + 10 * 60 * 1000 // 10 minutes
-    });
+    // Store OTP using Supabase (with fallback to memory)
+    const storeResult = await otpStore.storeOTP(email, otp.toString(), 10);
 
     // 🧪 DEBUG LOGGING (remove in production)
     console.log(`🔄 Generated OTP for ${email}: ${otp}`);
-    console.log(`📊 Current OTP store:`, global.otpStore);
+    console.log(`📊 OTP stored in ${storeResult ? 'database' : 'memory'}`);
     console.log(`🔄 Attempting to send OTP to: ${email}`);
     console.log(`📧 SMTP Config: ${process.env.SMTP_HOST}:${process.env.SMTP_PORT || 465}`);
 

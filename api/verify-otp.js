@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { otpStore } from "../utils/supabase-otp.js";
 
 export default async function handler(req, res) {
   try {
@@ -43,40 +44,21 @@ export default async function handler(req, res) {
     console.log(`🔄 Verifying OTP for: ${email}`);
 
     try {
-      // Check if OTP store exists
-      if (!global.otpStore) {
-        console.log('❌ No OTP store found');
-        return res.status(400).json({ success: false, error: "No OTP found. Please request a new code." });
+      // Verify OTP using Supabase (with fallback to memory)
+      const verificationResult = await otpStore.verifyOTP(email, otp);
+
+      if (!verificationResult.success) {
+        console.log(`❌ OTP verification failed for ${email}: ${verificationResult.error}`);
+        return res.status(400).json({ 
+          success: false, 
+          error: verificationResult.error 
+        });
       }
 
-      const storedData = global.otpStore.get(email.toLowerCase());
+      console.log(`✅ OTP verified successfully for ${email}`);
 
-      // 🧪 DEBUG LOGGING (remove in production)
-      console.log(`🔍 Looking for OTP for: ${email.toLowerCase()}`);
-      console.log(`📊 Found in store:`, storedData);
-      console.log(`📊 Current OTP store:`, global.otpStore);
-      console.log(`🔄 Comparing OTP: "${otp}" vs "${storedData?.otp}"`);
-
-      if (!storedData) {
-        console.log(`❌ No OTP found for email: ${email}`);
-        return res.status(400).json({ success: false, error: "No OTP found for this email. Please request a new code." });
-      }
-
-      // Check if OTP has expired
-      if (Date.now() > storedData.expires) {
-        console.log(`❌ OTP expired for email: ${email}`);
-        global.otpStore.delete(email.toLowerCase());
-        return res.status(400).json({ success: false, error: "OTP has expired. Please request a new code." });
-      }
-
-      // Verify OTP
-      if (storedData.otp !== otp) {
-        console.log(`❌ Invalid OTP for email: ${email}. Expected: ${storedData.otp}, Received: ${otp}`);
-        return res.status(400).json({ success: false, error: "Invalid OTP. Please try again." });
-      }
-
-      // OTP is valid, remove it from store
-      global.otpStore.delete(email.toLowerCase());
+      // Update user record in database
+      await otpStore.upsertUser(email);
 
       // Generate JWT token
       const jwtSecret = process.env.JWT_SECRET || 'EasyOTPAuth-2025-SuperSecure-JWT-Secret-Change-In-Production';
@@ -97,7 +79,7 @@ export default async function handler(req, res) {
           }
         );
 
-        console.log(`✅ OTP verified successfully for ${email}`);
+        console.log(`✅ JWT token generated for ${email}`);
         
         return res.status(200).json({ 
           success: true, 
