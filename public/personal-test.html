@@ -193,7 +193,7 @@
             resultDiv.innerHTML = '<div class="info">📤 Requesting OTP code...</div>';
             
             try {
-                const response = await fetch(API_BASE + '/auth/request-code', {
+                const response = await fetch(API_BASE + '/api/send-otp', {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',

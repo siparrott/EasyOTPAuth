@@ -278,7 +278,7 @@
             updateStep(1, 'active');
             log('Starting OTP request...', 'info');
             
-            const response = await makeRequest('/auth/request-code', {
+            const response = await makeRequest('/api/send-otp', {
                 email: testState.userEmail
             });
             

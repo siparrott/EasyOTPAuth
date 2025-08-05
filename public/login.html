@@ -405,7 +405,7 @@
         // API calls
         async function requestCode(email) {
             try {
-                const response = await fetch('/auth/request-code', {
+                const response = await fetch('/api/send-otp', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -416,7 +416,7 @@
                 const data = await response.json();
                 
                 if (!response.ok) {
-                    throw new Error(data.error || 'Failed to send code');
+                    throw new Error(data.message || 'Failed to send code');
                 }
                 
                 return data;
