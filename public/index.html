@@ -1,720 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EasyOTPAuth - Enterprise Passwordless Authentication</title>
-    <!-- Cache Buster: v8.0 - Removed Contact Sales buttons and pricing questions text -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Animation Libraries -->
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/intersection-observer@0.7.0/intersection-observer.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#FFA500',
-                        'primary-dark': '#FF8C00',
-                        secondary: '#6B7280',
-                        accent: '#10B981'
-                    },
-                    fontFamily: {
-                        'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        
-        .gradient-bg {
-            background: linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 100%);
-        }
-        
-        .logo-img {
-            height: 80px;
-            width: auto;
-        }
-        
-        .btn-primary {
-            background: #FFA500;
-            color: white;
-            font-weight: 600;
-            padding: 12px 24px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            background: #FF8C00;
-            transform: translateY(-2px);
-        }
-        
-        .btn-secondary {
-            background: white;
-            color: #374151;
-            font-weight: 600;
-            padding: 12px 24px;
-            border-radius: 8px;
-            border: 2px solid #E5E7EB;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-secondary:hover {
-            border-color: #FFA500;
-            transform: translateY(-2px);
-        }
-        
-        .feature-card {
-            background: white;
-            border-radius: 16px;
-            padding: 32px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
-        }
-        
-        .demo-widget {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            max-width: 450px;
-            width: 100%;
-            border: 1px solid #F3F4F6;
-        }
-        
-        .input-field {
-            width: 100%;
-            padding: 16px 20px;
-            border: 2px solid #E5E7EB;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-        
-        .input-field:focus {
-            outline: none;
-            border-color: #FFA500;
-            box-shadow: 0 0 0 4px rgba(255, 165, 0, 0.1);
-        }
-        
-        .success-message {
-            background: #ECFDF5;
-            color: #10B981;
-            padding: 16px 20px;
-            border-radius: 8px;
-            border: 1px solid #10B981;
-            text-align: center;
-            font-weight: 600;
-        }
-        
-        .error-message {
-            background: #FEF2F2;
-            color: #EF4444;
-            padding: 16px 20px;
-            border-radius: 8px;
-            border: 1px solid #EF4444;
-            text-align: center;
-            font-weight: 600;
-        }
-        
-        .loading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-        
-        .stat-number {
-            font-size: 48px;
-            font-weight: 900;
-            color: #374151;
-            display: block;
-            line-height: 1;
-        }
-        
-        .stat-label {
-            color: #6B7280;
-            font-weight: 600;
-            margin-top: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 14px;
-        }
-        
-        .pricing-card {
-            background: white;
-            border-radius: 16px;
-            padding: 32px;
-            border: 2px solid #E5E7EB;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .pricing-card.featured {
-            border-color: #FFA500;
-            transform: scale(1.05);
-            box-shadow: 0 20px 40px rgba(255, 165, 0, 0.2);
-        }
-        
-        .pricing-card.featured::before {
-            content: 'Most Popular';
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #FFA500;
-            color: white;
-            padding: 8px 24px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 12px;
-            text-transform: uppercase;
-        }
-        
-        .comparison-table {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-        }
-        
-        .comparison-table th,
-        .comparison-table td {
-            padding: 16px 24px;
-            text-align: left;
-            border-bottom: 1px solid #F3F4F6;
-        }
-        
-        .comparison-table th {
-            background: #F9FAFB;
-            font-weight: 600;
-            color: #374151;
-        }
-        
-        .comparison-table .traditional {
-            background: #FEF2F2;
-        }
-        
-        .comparison-table .rapidauth {
-            background: #F0FDF4;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EasyOTPAuth</title>
 
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #F0FDF4;
-            color: #16A34A;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 32px;
-        }
+  <!-- ✅ FIX: Correct Tailwind import -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-        .hero-badge::before {
-            content: '●';
-            color: #16A34A;
-        }
-
-        .decorative-circle {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0.1;
-        }
-
-        .circle-yellow {
-            background: #FFA500;
-            width: 120px;
-            height: 120px;
-            top: 20%;
-            left: 10%;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .circle-blue {
-            background: #3B82F6;
-            width: 80px;
-            height: 80px;
-            top: 15%;
-            right: 15%;
-            animation: float 8s ease-in-out infinite reverse;
-        }
-
-        .circle-green {
-            background: #10B981;
-            width: 60px;
-            height: 60px;
-            bottom: 30%;
-            left: 5%;
-            animation: float 7s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0px) translateX(0px);
-            }
-            25% {
-                transform: translateY(-20px) translateX(10px);
-            }
-            50% {
-                transform: translateY(-10px) translateX(-15px);
-            }
-            75% {
-                transform: translateY(-25px) translateX(5px);
-            }
-        }
-
-        .trust-badge {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #6B7280;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .trust-dots {
-            display: flex;
-            gap: 4px;
-        }
-
-        .trust-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .trust-dot:nth-child(1) { background: #3B82F6; }
-        .trust-dot:nth-child(2) { background: #10B981; }
-        .trust-dot:nth-child(3) { background: #F59E0B; }
-
-        .typewriter {
-            overflow: hidden;
-            border-right: 3px solid #FFA500;
-            white-space: nowrap;
-            animation: typing 2s steps(15, end), blink-caret 1s step-end infinite;
-        }
-
-        @keyframes typing {
-            from {
-                width: 0;
-            }
-            to {
-                width: 100%;
-            }
-        }
-
-        @keyframes blink-caret {
-            from, to {
-                border-color: transparent;
-            }
-            50% {
-                border-color: #FFA500;
-            }
-        }
-
-        /* NEW ANIMATIONS */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .hover-lift {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .hover-lift:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .counter-animation {
-            font-variant-numeric: tabular-nums;
-        }
-
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            height: 0;
-            overflow: hidden;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        }
-
-        .video-container iframe,
-        .video-container video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .feature-icon {
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover .feature-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-        }
-
-        .gradient-text {
-            background: linear-gradient(135deg, #FFA500, #FF6B35);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .cta-banner {
-            background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta-banner::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        .metric-card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 165, 0, 0.1);
-        }
-
-        .metric-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(255, 165, 0, 0.15);
-        }
-
-        .metric-number {
-            font-size: 3rem;
-            font-weight: 900;
-            color: #FFA500;
-            display: block;
-            line-height: 1;
-            margin-bottom: 8px;
-        }
-
-        .metric-label {
-            color: #374151;
-            font-weight: 600;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .video-placeholder {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            border: 2px dashed #cbd5e0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 300px;
-            border-radius: 16px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .video-placeholder:hover {
-            border-color: #FFA500;
-            background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
-        }
-
-        .video-play-btn {
-            width: 80px;
-            height: 80px;
-            background: #FFA500;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 32px;
-            margin-bottom: 16px;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 32px rgba(255, 165, 0, 0.3);
-        }
-
-        .video-placeholder:hover .video-play-btn {
-            transform: scale(1.1);
-            box-shadow: 0 12px 40px rgba(255, 165, 0, 0.4);
-        }
-
-        /* Demo Widget Specific Styles */
-        .demo-section {
-            background: #F8FAFC;
-        }
-
-        .demo-widget-container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            border: 1px solid #E5E7EB;
-            max-width: 420px;
-            width: 100%;
-        }
-
-        .demo-widget-header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        .demo-widget-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 8px;
-        }
-
-        .demo-widget-subtitle {
-            font-size: 14px;
-            color: #6B7280;
-        }
-
-        .demo-input-group {
-            margin-bottom: 24px;
-        }
-
-        .demo-input-label {
-            display: block;
-            font-size: 14px;
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 8px;
-        }
-
-        .demo-input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #E5E7EB;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.2s ease;
-            background: #FAFAFA;
-        }
-
-        .demo-input:focus {
-            outline: none;
-            border-color: #FFA500;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.1);
-        }
-
-        .demo-input-row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .demo-input-code {
-            flex: 1;
-            text-align: center;
-            font-size: 18px;
-            letter-spacing: 2px;
-        }
-
-        .demo-get-code-btn {
-            background: #F3F4F6;
-            color: #6B7280;
-            border: 2px solid #E5E7EB;
-            padding: 14px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .demo-get-code-btn:hover {
-            background: #E5E7EB;
-            border-color: #D1D5DB;
-        }
-
-        .demo-login-btn {
-            width: 100%;
-            background: #FFA500;
-            color: white;
-            border: none;
-            padding: 16px 24px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-bottom: 16px;
-        }
-
-        .demo-login-btn:hover {
-            background: #FF8C00;
-        }
-
-        .demo-footer-text {
-            text-align: center;
-            font-size: 12px;
-            color: #9CA3AF;
-        }
-
-        .demo-step-indicators {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 24px;
-        }
-
-        .demo-step-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #E5E7EB;
-            transition: all 0.2s ease;
-        }
-
-        .demo-step-dot.active {
-            background: #FFA500;
-        }
-    </style>
+  <!-- Optional: Custom Tailwind config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4f46e5',
+            secondary: '#ec4899',
+          },
+        },
+      },
+    };
+  </script>
 </head>
-<body class="bg-gray-50 font-sans">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+<body class="bg-gray-50 text-gray-800 font-sans">
+    <!-- Navigation Bar -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 navbar-blur">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <img src="https://i.postimg.cc/G2QzTjsQ/Easy-OTPAuthlogo.png" alt="EasyOTPAuth" class="logo-img">
-                </div>
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#demo" class="text-gray-600 hover:text-gray-900">Try Demo</a>
-                    <a href="#features" class="text-gray-600 hover:text-gray-900">Features</a>
-                    <a href="info.html" class="text-gray-600 hover:text-gray-900">Info</a>
-                    <a href="#pricing" class="text-gray-600 hover:text-gray-900">Pricing</a>
-                    <a href="login.html" class="btn-primary">
-                        Get Started
+                <div class="flex-shrink-0">
+                    <a href="/">
+                        <img src="https://i.postimg.cc/G2QzTjsQ/Easy-OTPAuthlogo.png" alt="EasyOTPAuth" class="h-8">
                     </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="flex space-x-4">
+                        <a href="#features" class="text-gray-600 hover:text-gray-900 transition-colors">Features</a>
+                        <a href="#pricing" class="text-gray-600 hover:text-gray-900 transition-colors">Pricing</a>
+                        <a href="#demo" class="text-gray-600 hover:text-gray-900 transition-colors">Demo</a>
+                        <a href="login.html" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-600 transition-all">
+                            Get Started
+                        </a>
+                    </div>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                        <span class="sr-only">Open main menu</span>
+                        <!-- Heroicon name: mini/bars-3 -->
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
+    <!-- Mobile menu, show/hide based on menu state. -->
+    <div id="mobile-menu" class="hidden md:hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <a href="#features" class="block text-gray-600 hover:text-gray-900 transition-colors">Features</a>
+            <a href="#pricing" class="block text-gray-600 hover:text-gray-900 transition-colors">Pricing</a>
+            <a href="#demo" class="block text-gray-600 hover:text-gray-900 transition-colors">Demo</a>
+            <a href="login.html" class="block bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-600 transition-all">
+                Get Started
+            </a>
+        </div>
+    </div>
+
     <!-- Hero Section -->
-    <section class="gradient-bg py-20 relative overflow-hidden">
-        <!-- Decorative circles -->
-        <div class="decorative-circle circle-yellow"></div>
-        <div class="decorative-circle circle-blue"></div>
-        <div class="decorative-circle circle-green"></div>
-        
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-            <div class="text-center mb-16">
-                <div class="hero-badge">
-                    Enterprise-grade passwordless authentication
-                </div>
-                
-                <h1 class="text-5xl md:text-6xl font-black text-gray-900 mb-6">
-                    Enterprise Passwordless Authentication<br>
-                    <span class="text-primary">That Converts 3x Better</span>
-                </h1>
-                
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                    Stop Losing Clients at the Login Page
-                </h2>
-                
-                <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                    <span class="font-semibold">No passwords. No friction. No lost revenue.</span><br>
-                    EasyOTPAuth gives you enterprise-grade passwordless login, white-labeled for your brand, for a one-time fee—so you can convert more users, scale faster, and finally ditch password chaos forever.
-                </p>
-                
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-                    <a href="/public/login.html" class="btn-primary text-lg px-8 py-4 flex items-center gap-2">
-                        <span>⚡</span> Try Live Demo
-                    </a>
-                    <div class="trust-badge">
-                        <div class="trust-dots">
-                            <div class="trust-dot"></div>
-                            <div class="trust-dot"></div>
-                            <div class="trust-dot"></div>
+    <header class="bg-white">
+        <div class="relative overflow-hidden">
+            <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-4">
+                        Secure, Simple, and Blazing-Fast Authentication
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                        Drop-in passwordless login for your applications.
+                        <span id="typewriter-text" class="text-xl font-bold text-primary"></span>
+                    </p>
+                    <div class="flex justify-center mb-8">
+                        <a href="/public/login.html" class="bg-primary text-white px-6 py-3 rounded-md text-lg font-semibold shadow-md hover:bg-indigo-600 transition-all flex items-center gap-2">
+                            <span>⚡</span> Try Live Demo
+                        </a>
+                    </div>
+                    <div class="flex justify-center gap-4">
+                        <div class="text-center">
+                            <span class="block text-4xl font-extrabold text-primary">3x</span>
+                            <span class="text-sm text-gray-500">Higher Conversion</span>
                         </div>
-                        <span>Trusted by 10,000+ developers</span>
-                    </div>
-                </div>
-                
-                <!-- Stats -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
-                    <div class="text-center">
-                        <span class="stat-number">3x</span>
-                        <span class="stat-label">Higher Conversion</span>
-                    </div>
-                    <div class="text-center">
-                        <span class="stat-number">85%</span>
-                        <span class="stat-label">Less Support Tickets</span>
-                    </div>
-                    <div class="text-center">
-                        <span class="stat-number">2min</span>
-                        <span class="stat-label">Setup Time</span>
+                        <div class="text-center">
+                            <span class="block text-4xl font-extrabold text-primary">85%</span>
+                            <span class="text-sm text-gray-500">Less Support Tickets</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-4xl font-extrabold text-primary">2min</span>
+                            <span class="text-sm text-gray-500">Setup Time</span>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Decorative circles -->
+            <div class="absolute inset-0 pointer-events-none">
+                <div class="w-full h-full rounded-full bg-gradient-to-r from-yellow-100 to-transparent opacity-50"></div>
+                <div class="w-full h-full rounded-full bg-gradient-to-r from-blue-100 to-transparent opacity-50"></div>
+                <div class="w-full h-full rounded-full bg-gradient-to-r from-green-100 to-transparent opacity-50"></div>
+            </div>
         </div>
-    </section>
+    </header>
 
     <!-- Problem Section -->
     <section class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-black text-gray-900 mb-8">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
                     The $2.1 Trillion Problem
                 </h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                <p class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
                     Every year, businesses lose $2.1 trillion in revenue due to poor authentication UX. 
                     Your login form is where customers abandon their journey.
                 </p>
@@ -778,12 +181,12 @@
 
     <!-- Demo Section -->
     <section id="demo" class="py-20 demo-section">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-black text-gray-900 mb-8">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
                     Experience the Future of Login
                 </h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                <p class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
                     See how simple authentication can be when you remove the friction. No passwords, no complexity, just results.
                 </p>
             </div>
@@ -928,12 +331,12 @@
 
     <!-- Statistics Section -->
     <section class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-black text-gray-900 mb-8">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-8">
                     🔍 Real Password Friction Statistics
                 </h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                <p class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
                     The numbers don't lie. Password friction is costing your business real money. Here's the data that proves it.
                 </p>
             </div>
@@ -1026,7 +429,7 @@
 
     <!-- Solution Section -->
     <section class="py-20 bg-primary text-white">
-        <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-4xl font-black mb-8">
                 Stop Losing Revenue to Password Friction
             </h2>
@@ -1046,12 +449,12 @@
 
     <!-- Enterprise Features -->
     <section id="features" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-black text-gray-900 mb-8">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-8">
                     Built for Enterprise Scale
                 </h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                <p class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
                     Everything you need for secure, scalable, and friendly authentication
                 </p>
             </div>
@@ -1098,12 +501,12 @@
 
     <!-- Pricing Section -->
     <section id="pricing" class="py-20 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-black text-gray-900 mb-8">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-8">
                     The One-Time, Lifetime Solution
                 </h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                <p class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
                     Pay once, use forever. No monthly fees, no per-user penalties, no recurring costs that eat your margins.
                 </p>
             </div>
@@ -1180,409 +583,113 @@
             </div>
             
             <!-- Lifetime Pricing Options -->
-            <div class="text-center mb-12">
-                <h3 class="text-3xl font-bold text-gray-900 mb-4">Lifetime Pricing Options</h3>
-                <p class="text-lg text-gray-600">One payment. Lifetime access. No recurring fees ever.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div class="pricing-card">
+                    <div class="text-center mb-4">
+                        <span class="block text-4xl font-extrabold text-primary">Starter Plan</span>
+                        <span class="block text-2xl font-bold text-gray-900">$29</span>
+                    </div>
+                    <ul class="space-y-4 mb-6">
+                        <li class="flex items-center">
+                            <svg class="h-6 w-6 text-green-500 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4-4m2-2a9 9 0 11-18 0a9 9 0 0118 0z" />
+                            </svg>
+                            <span class="text-gray-700">One-time payment, lifetime access</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="h-6 w-6 text-green-500 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4-4m2-2a9 9 0 11-18 0a9 9 0 0118 0z" />
+                            </svg>
+                            <span class="text-gray-700">All features included</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="h-6 w-6 text-green-500 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4-4m2-2a9 9 0 11-18 0a9 9 0 0118 0z" />
+                            </svg>
+                            <span class="text-gray-700">Email support</span>
+                        </li>
+                    </ul>
+                    <div class="text-center">
+                        <button class="btn-primary w-full">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="text-center mb-4">
+                        <span class="block text-4xl font-extrabold text-primary">Professional Plan</span>
+                        <span class="block text-2xl font-bold text-gray-900">$149</span>
+                    </div>
+                    <ul class="space-y-4 mb-6">
+                        <li class="flex items-center">
+                            <svg class="h-6 w-6 text-green-500 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4-4m2-2a9 9 0 11-18 0a9 9 0 0118 0z" />
+                            </svg>
+                            <span class="text-gray-700">One-time payment, lifetime access</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="h-6 w-6 text-green-500 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4-4m2-2a9 9 0 11-18 0a9 9 0 0118 0z" />
+                            </svg>
+                            <span class="text-gray-700">All features included</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="h-6 w-6 text-green-500 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4-4m2-2a9 9 0 11-18 0a9 9 0 0118 0z" />
+                            </svg>
+                            <span class="text-gray-700">Priority email support</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="h-6 w-6 text-green-500 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4-4m2-2a9 9 0 11-18 0a9 9 0 0118 0z" />
+                            </svg>
+                            <span class="text-gray-700">Access to beta features</span>
+                        </li>
+                    </ul>
+                    <div class="text-center">
+                        <button class="btn-primary w-full">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                <!-- Starter WL -->
-                <div class="pricing-card">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Starter WL</h3>
-                    <div class="mb-2">
-                        <span class="text-4xl font-black text-primary">$497</span>
-                    </div>
-                    <div class="text-sm text-gray-500 mb-6">(early access pricing)</div>
-                    <div class="text-center mb-6">
-                        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
-                            Best For: 1 domain, 5k users/month
-                        </span>
-                    </div>
-                    <ul class="space-y-3 mb-8 text-gray-600">
-                        <li class="flex items-center gap-3">
-                            <span class="text-green-500">✓</span>
-                            1 domain, 5k users/month
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <span class="text-green-500">✓</span>
-                            Full white-label branding
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <span class="text-green-500">✓</span>
-                            Complete source code
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <span class="text-green-500">✓</span>
-                            Email support
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <span class="text-green-500">✓</span>
-                            Lifetime updates
-                        </li>
-                    </ul>
-                    <button onclick="subscribeToPlan('starter-lifetime')" class="btn-secondary w-full py-4">
-                        Get Lifetime Access
-                    </button>
-                </div>
-                
-                <!-- Pro Agency WL -->
-                <div class="pricing-card featured">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Pro Agency WL</h3>
-                    <div class="mb-6">
-                        <span class="text-4xl font-black text-gray-900">$997</span>
-                    </div>
-                    <div class="text-center mb-6">
-                        <span class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
-                            Best For: 5 domains, 25k users/month
-                        </span>
-                    </div>
-                    <ul class="space-y-3 mb-8 text-gray-600">
-                        <li class="flex items-center gap-3">
-                            <span class="text-green-500">✓</span>
-                            5 domains, 25k users/month
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <span class="text-green-500">✓</span>
-                            Full white-label branding
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <span class="text-green-500">✓</span>
-                            Priority support
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <span class="text-green-500">✓</span>
-                            Advanced analytics
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <span class="text-green-500">✓</span>
-                            Custom integrations
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <span class="text-green-500">✓</span>
-                            Reseller rights
-                        </li>
-                    </ul>
-                    <button onclick="subscribeToPlan('pro-agency-lifetime')" class="btn-primary w-full py-4">
-                        Get Lifetime Access
-                    </button>
-                </div>
-                
-                <!-- Enterprise WL -->
-                <div class="pricing-card">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Enterprise WL</h3>
-                    <div class="mb-6">
-                        <span class="text-3xl font-black text-gray-900">$2,997–$4,997</span>
-                    </div>
-                    <div class="text-center mb-6">
-                        <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full">
-                            Unlimited domains, custom integrations
-                        </span>
-                    </div>
-                    <ul class="space-y-3 mb-8 text-gray-600">
-                        <li class="flex items-center gap-3">
-                            <span class="text-green-500">✓</span>
-                            Unlimited domains & users
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <span class="text-green-500">✓</span>
-                            Custom integrations & SLA
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <span class="text-green-500">✓</span>
-                            Dedicated support team
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <span class="text-green-500">✓</span>
-                            On-premise deployment
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <span class="text-green-500">✓</span>
-                            White-label everything
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <span class="text-green-500">✓</span>
-                            Full commercial rights
-                        </li>
-                    </ul>
-                    <button onclick="subscribeToPlan('enterprise-lifetime')" class="btn-secondary w-full py-4">
-                        Get Lifetime Access
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Why Agencies and SaaS Founders Love EasyOTPAuth -->
-    <section class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-black text-gray-900 mb-8">
-                    Why Agencies and SaaS Founders Love EasyOTPAuth
-                </h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Built specifically for the needs of developers, agencies, and growing SaaS companies.
+            <!-- Payment Note -->
+            <div class="text-center mt-8">
+                <p class="text-sm text-gray-500">
+                    14-day free trial available for all plans. Cancel anytime.
                 </p>
             </div>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Developers -->
-                <div class="text-center p-6">
-                    <div class="text-6xl mb-4">👩‍💻</div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Developers</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        2-minute integration with React, Vue, Next.js, WordPress, Firebase, Supabase, and more.
-                    </p>
-                </div>
-
-                <!-- Agencies -->
-                <div class="text-center p-6">
-                    <div class="text-6xl mb-4">🏢</div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Agencies</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        White-label everything, resell to clients at full markup, zero recurring costs.
-                    </p>
-                </div>
-
-                <!-- SaaS Founders -->
-                <div class="text-center p-6">
-                    <div class="text-6xl mb-4">🚀</div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">SaaS Founders</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Stop worrying about password resets, UX drop-off, and support overhead.
-                    </p>
-                </div>
-
-                <!-- Enterprise Teams -->
-                <div class="text-center p-6">
-                    <div class="text-6xl mb-4">🏭</div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Enterprise Teams</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Secure internal apps without blowing six figures on Auth0.
-                    </p>
-                </div>
-            </div>
         </div>
     </section>
 
-    <!-- Real Results Section -->
-    <section class="py-20 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <!-- NEW SECTION: Success Metrics -->
+    <section id="success-metrics" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-black text-gray-900 mb-8">
-                    Real Results. Real Numbers.
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-8">
+                    Proven Results with EasyOTPAuth
                 </h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    See the measurable impact EasyOTPAuth has on your business metrics.
-                </p>
-            </div>
-            
-            <div class="grid md:grid-cols-3 gap-8 mb-16">
-                <div class="bg-white p-8 rounded-xl shadow-sm text-center">
-                    <div class="text-5xl font-black text-primary mb-4">3x</div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">Higher Sign-up Completion</h3>
-                    <p class="text-gray-600">vs password-based flows</p>
-                </div>
-
-                <div class="bg-white p-8 rounded-xl shadow-sm text-center">
-                    <div class="text-5xl font-black text-green-500 mb-4">85%</div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">Fewer Support Tickets</h3>
-                    <p class="text-gray-600">freeing your team to build, not babysit logins</p>
-                </div>
-
-                <div class="bg-white p-8 rounded-xl shadow-sm text-center">
-                    <div class="text-5xl font-black text-blue-500 mb-4">Zero</div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">Stored Passwords</h3>
-                    <p class="text-gray-600">zero risk of credential breaches</p>
-                </div>
-            </div>
-
-            <!-- Quick ROI Example -->
-            <div class="bg-white rounded-2xl p-12 shadow-sm">
-                <div class="text-center mb-8">
-                    <h3 class="text-3xl font-bold text-gray-900 mb-4">Quick ROI Example</h3>
-                    <p class="text-gray-600">See how EasyOTPAuth pays for itself in the first month</p>
-                </div>
-                
-                <div class="grid md:grid-cols-3 gap-8 text-center">
-                    <div>
-                        <div class="text-2xl font-bold text-red-500 mb-2">1,000 sign-ups/month × 23% friction</div>
-                        <div class="text-lg text-gray-600 mb-2">= 230 lost customers</div>
-                        <div class="text-sm text-gray-500">Current password-based flow</div>
-                    </div>
-                    <div>
-                        <div class="text-2xl font-bold text-red-500 mb-2">230 lost × $50/customer</div>
-                        <div class="text-lg text-gray-600 mb-2">= $11,500/month lost</div>
-                        <div class="text-sm text-gray-500">Revenue bleeding to friction</div>
-                    </div>
-                    <div>
-                        <div class="text-2xl font-bold text-green-500 mb-2">Switch to EasyOTPAuth</div>
-                        <div class="text-lg text-gray-600 mb-2">→ keep that revenue, forever</div>
-                        <div class="text-sm text-gray-500">ROI in first month</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- NEW SECTION: Feature Image Cards -->
-    <section class="py-20 bg-white fade-in" id="feature-cards">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-black text-gray-900 mb-8">
-                    Why Smart Companies Choose <span class="gradient-text">EasyOTPAuth</span>
-                </h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Three core advantages that make passwordless authentication the obvious choice for growth-focused businesses.
+                <p class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
+                    See the impact of passwordless authentication on businesses like yours
                 </p>
             </div>
             
             <div class="grid md:grid-cols-3 gap-8">
-                <!-- Card 1: Conversion -->
-                <div class="feature-card hover-lift">
-                    <div class="feature-icon text-6xl mb-6 text-center">🚀</div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">3x Higher Conversions</h3>
-                    <p class="text-gray-600 text-center leading-relaxed">
-                        Users complete signup 3x faster without password complexity. 
-                        No typing, no remembering, no friction—just instant access that converts visitors into customers.
-                    </p>
-                    <div class="mt-6 text-center">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                            ✓ Proven Results
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Card 2: Security -->
-                <div class="feature-card hover-lift">
-                    <div class="feature-icon text-6xl mb-6 text-center">🛡️</div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">Zero Password Breaches</h3>
-                    <p class="text-gray-600 text-center leading-relaxed">
-                        No stored passwords means no credential theft. Enterprise-grade security with SOC 2 compliance, 
-                        JWT tokens, and email-based verification that hackers can't compromise.
-                    </p>
-                    <div class="mt-6 text-center">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                            ✓ Bank-Level Security
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Card 3: Support -->
-                <div class="feature-card hover-lift">
-                    <div class="feature-icon text-6xl mb-6 text-center">💰</div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">85% Fewer Support Tickets</h3>
-                    <p class="text-gray-600 text-center leading-relaxed">
-                        Eliminate password reset requests, forgotten credential calls, and account lockout issues. 
-                        Your support team focuses on growth, not password problems.
-                    </p>
-                    <div class="mt-6 text-center">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800">
-                            ✓ Cost Savings
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- NEW SECTION: Video Explainer -->
-    <section class="py-20 bg-gray-50 fade-in" id="video-demo">
-        <div class="max-w-6xl mx-auto px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-black text-gray-900 mb-8">
-                    See EasyOTPAuth in Action
-                </h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Watch how passwordless authentication transforms your user experience in under 60 seconds.
-                </p>
-            </div>
-            
-            <div class="video-container">
-                <!-- Video Placeholder -->
-                <div class="video-placeholder" onclick="playVideo()">
-                    <div class="video-play-btn">
-                        ▶️
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">EasyOTPAuth Demo</h3>
-                    <p class="text-gray-600 text-center max-w-md">
-                        See the complete authentication flow from email entry to successful login—no passwords, no friction, just results.
-                    </p>
-                </div>
-            </div>
-            
-            <div class="text-center mt-12">
-                <a href="/public/login.html" class="btn-primary text-lg px-8 py-4 inline-flex items-center gap-2">
-                    <span>⚡</span> Try Live Demo Now
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- NEW SECTION: Customer Success Metrics -->
-    <section class="py-20 bg-white fade-in" id="success-metrics">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-black text-gray-900 mb-8">
-                    Real Numbers from Real Customers
-                </h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    See the measurable impact EasyOTPAuth has on conversion rates, user experience, and business growth.
-                </p>
-            </div>
-            
-            <div class="grid md:grid-cols-4 gap-8">
-                <!-- Metric 1 -->
                 <div class="metric-card">
-                    <div class="metric-number counter-animation" data-count="3">0</div>
-                    <div class="metric-label">Times Higher Conversion</div>
-                    <p class="text-gray-500 text-sm mt-3">vs traditional login flows</p>
-                </div>
-
-                <!-- Metric 2 -->
-                <div class="metric-card">
-                    <div class="metric-number counter-animation" data-count="85">0</div>
-                    <div class="metric-label">% Fewer Support Tickets</div>
-                    <p class="text-gray-500 text-sm mt-3">password-related issues eliminated</p>
-                </div>
-
-                <!-- Metric 3 -->
-                <div class="metric-card">
-                    <div class="metric-number counter-animation" data-count="2">0</div>
-                    <div class="metric-label">Minute Setup Time</div>
-                    <p class="text-gray-500 text-sm mt-3">from integration to production</p>
-                </div>
-
-                <!-- Metric 4 -->
-                <div class="metric-card">
-                    <div class="metric-number counter-animation" data-count="98">0</div>
-                    <div class="metric-label">% Email Delivery Rate</div>
-                    <p class="text-gray-500 text-sm mt-3">enterprise-grade reliability</p>
-                </div>
-            </div>
-
-            <!-- ROI Calculator -->
-            <div class="mt-20 bg-gray-50 rounded-2xl p-12">
-                <div class="text-center mb-12">
-                    <h3 class="text-3xl font-bold text-gray-900 mb-4">Calculate Your ROI</h3>
-                    <p class="text-gray-600">See how much revenue you're losing to password friction right now.</p>
+                    <div class="metric-number text-primary" data-count="3000">0</div>
+                    <div class="metric-label">Monthly Active Users</div>
                 </div>
                 
-                <div class="grid md:grid-cols-3 gap-8 text-center">
-                    <div>
-                        <div class="text-4xl font-black text-red-500 mb-2">$11,500</div>
-                        <div class="text-sm text-gray-600 font-semibold">Monthly revenue lost</div>
-                        <div class="text-xs text-gray-500 mt-1">1,000 signups × 23% friction × $50 value</div>
-                    </div>
-                    <div>
-                        <div class="text-4xl font-black text-green-500 mb-2">$138K</div>
-                        <div class="text-sm text-gray-600 font-semibold">Annual revenue saved</div>
-                        <div class="text-xs text-gray-500 mt-1">With EasyOTPAuth implementation</div>
-                    </div>
-                    <div>
-                        <div class="text-4xl font-black text-primary mb-2">4,600%</div>
-                        <div class="text-sm text-gray-600 font-semibold">ROI in first year</div>
-                        <div class="text-xs text-gray-500 mt-1">$138K saved vs $3K investment</div>
-                    </div>
+                <div class="metric-card">
+                    <div class="metric-number text-primary" data-count="98">0</div>
+                    <div class="metric-label">Email Delivery Success Rate</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-number text-primary" data-count="150">0</div>
+                    <div class="metric-label">Support Tickets Resolved</div>
                 </div>
             </div>
         </div>
@@ -1590,7 +697,7 @@
 
     <!-- NEW SECTION: CTA Banner -->
     <section class="py-20 cta-banner relative overflow-hidden fade-in" id="final-cta">
-        <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center relative z-10">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <h2 class="text-5xl font-black text-white mb-8">
                 Stop Losing Revenue to Password Friction
             </h2>
@@ -1633,7 +740,7 @@
 
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-16">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center">
                 <div class="flex items-center justify-center mb-6">
                     <img src="https://i.postimg.cc/G2QzTjsQ/Easy-OTPAuthlogo.png" alt="EasyOTPAuth" class="logo-img">
@@ -1655,758 +762,42 @@
 
     <!-- JavaScript -->
     <script>
-        // Typewriter effect for "the Login Page"
-        function startTypewriter() {
-            const element = document.getElementById('typewriter-text');
-            const text = 'the Login Page';
-            element.textContent = '';
-            element.style.width = '0';
-            
-            // Start typing animation after a delay
-            setTimeout(() => {
-                element.style.animation = 'typing 2s steps(15, end), blink-caret 1s step-end infinite';
-                element.textContent = text;
-            }, 1000);
-        }
+        // Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
 
-        // Start typewriter effect when page loads
-        document.addEventListener('DOMContentLoaded', startTypewriter);
+        document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .slide-in-bottom').forEach(el => {
+            observer.observe(el);
+        });
 
-        // Demo widget functionality
-        const demoForm = document.getElementById('demo-form');
-        const demoSuccess = document.getElementById('demo-success');
-        const demoError = document.getElementById('demo-error');
-        const demoComplete = document.getElementById('demo-complete');
-        
-        const emailInput = document.getElementById('demo-email');
-        const codeInput = document.getElementById('demo-code');
-        const codeVerifyInput = document.getElementById('demo-code-verify');
-        const getCodeBtn = document.getElementById('demo-get-code');
-        const loginBtn = document.getElementById('demo-login');
-        const verifyBtn = document.getElementById('demo-verify');
-        const resendBtn = document.getElementById('demo-resend');
-        const retryBtn = document.getElementById('demo-retry');
-        const resetBtn = document.getElementById('demo-reset');
-        
-        const errorText = document.getElementById('error-text');
-        
-        // State management
-        let currentState = 'form';
-        let isLoading = false;
-        
-        function showState(state) {
-            // Hide all states
-            demoForm.classList.add('hidden');
-            demoSuccess.classList.add('hidden');
-            demoError.classList.add('hidden');
-            demoComplete.classList.add('hidden');
-            
-            // Show current state
-            switch(state) {
-                case 'form':
-                    demoForm.classList.remove('hidden');
-                    break;
-                case 'success':
-                    demoSuccess.classList.remove('hidden');
-                    break;
-                case 'error':
-                    demoError.classList.remove('hidden');
-                    break;
-                case 'complete':
-                    demoComplete.classList.remove('hidden');
-                    break;
-            }
-            currentState = state;
-        }
-        
-        function setLoading(loading) {
-            isLoading = loading;
-            const widget = document.querySelector('.demo-widget-container');
-            if (loading) {
-                widget.classList.add('loading');
+        document.addEventListener("DOMContentLoaded", function () {
+          const typewriterTarget = document.getElementById("typewriter-text");
+
+          // ✅ FIX: Only run if element exists
+          if (typewriterTarget) {
+            startTypewriter(typewriterTarget);
+          } else {
+            console.warn("Element #typewriter-text not found.");
+          }
+        });
+
+        function startTypewriter(el) {
+          const text = "Welcome to EasyOTPAuth!";
+          let i = 0;
+
+          const interval = setInterval(() => {
+            if (i < text.length) {
+              el.textContent += text[i++];
             } else {
-                widget.classList.remove('loading');
+              clearInterval(interval);
             }
+          }, 60);
         }
-        
-        function showError(message) {
-            errorText.textContent = message;
-            showState('error');
-        }
-        
-        // API calls
-        async function requestCode(email) {
-            try {
-                const response = await fetch('/api/send-otp', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email })
-                });
-                
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(data.error || 'Failed to send code');
-                }
-                
-                return data;
-            } catch (error) {
-                throw error;
-            }
-        }
-        
-        async function verifyCode(email, code) {
-            try {
-                const response = await fetch('/api/verify-otp', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email, otp: code })
-                });
-                
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(data.error || 'Invalid code');
-                }
-                
-                return data;
-            } catch (error) {
-                throw error;
-            }
-        }
-        
-        // Event handlers
-        getCodeBtn.addEventListener('click', async () => {
-            if (isLoading) return;
-            
-            const email = emailInput.value.trim();
-            if (!email) {
-                showError('Please enter your email address');
-                return;
-            }
-            
-            if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-                showError('Please enter a valid email address');
-                return;
-            }
-            
-            setLoading(true);
-            
-            try {
-                await requestCode(email);
-                showState('success');
-                codeVerifyInput.focus();
-            } catch (error) {
-                showError(error.message);
-            } finally {
-                setLoading(false);
-            }
-        });
-        
-        loginBtn.addEventListener('click', async () => {
-            if (isLoading) return;
-            
-            const email = emailInput.value.trim();
-            const code = codeInput.value.trim();
-            
-            if (!email) {
-                showError('Please enter your email address');
-                return;
-            }
-            
-            if (!code || code.length !== 6) {
-                showError('Please enter the 6-digit code');
-                return;
-            }
-            
-            setLoading(true);
-            
-            try {
-                await verifyCode(email, code);
-                showState('complete');
-            } catch (error) {
-                showError(error.message);
-            } finally {
-                setLoading(false);
-            }
-        });
-        
-        verifyBtn.addEventListener('click', async () => {
-            if (isLoading) return;
-            
-            const email = emailInput.value.trim();
-            const code = codeVerifyInput.value.trim();
-            
-            if (!code || code.length !== 6) {
-                showError('Please enter the 6-digit code');
-                return;
-            }
-            
-            setLoading(true);
-            
-            try {
-                await verifyCode(email, code);
-                showState('complete');
-            } catch (error) {
-                showError(error.message);
-            } finally {
-                setLoading(false);
-            }
-        });
-        
-        resendBtn.addEventListener('click', async () => {
-            if (isLoading) return;
-            
-            const email = emailInput.value.trim();
-            setLoading(true);
-            
-            try {
-                await requestCode(email);
-                codeVerifyInput.value = '';
-                codeVerifyInput.focus();
-            } catch (error) {
-                showError(error.message);
-            } finally {
-                setLoading(false);
-            }
-        });
-        
-        retryBtn.addEventListener('click', () => {
-            showState('form');
-            emailInput.focus();
-        });
-        
-        resetBtn.addEventListener('click', () => {
-            emailInput.value = '';
-            codeInput.value = '';
-            codeVerifyInput.value = '';
-            showState('form');
-            emailInput.focus();
-        });
-        
-        // Enter key handling
-        emailInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                getCodeBtn.click();
-            }
-        });
-        
-        codeInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                loginBtn.click();
-            }
-        });
-        
-        codeVerifyInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                verifyBtn.click();
-            }
-        });
-        
-        // Auto-format code inputs
-        [codeInput, codeVerifyInput].forEach(input => {
-            input.addEventListener('input', (e) => {
-                let value = e.target.value.replace(/\D/g, '');
-                if (value.length > 6) {
-                    value = value.slice(0, 6);
-                }
-                e.target.value = value;
-            });
-        });
-        
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-        
-        // Initialize
-        emailInput.focus();
-        
-        // =============== STRIPE PAYMENT FUNCTIONS ===============
-        
-        // Stripe product configuration (these will be set via environment variables)
-        const STRIPE_PRODUCTS = {
-            starter: {
-                priceId: 'price_starter_monthly', // Will be replaced with actual Stripe price ID
-                name: 'Starter Plan',
-                price: 2900
-            },
-            professional: {
-                priceId: 'price_professional_monthly', // Will be replaced with actual Stripe price ID
-                name: 'Professional Plan',
-                price: 14900
-            }
-        };
-        
-        // Subscribe to a plan
-        async function subscribeToPlan(planType) {
-            const product = STRIPE_PRODUCTS[planType];
-            
-            if (!product) {
-                alert('Invalid plan selected. Please try again.');
-                return;
-            }
-            
-            // Get customer email
-            const email = prompt(`Enter your email address to start your ${product.name}:`);
-            
-            if (!email || !validateEmail(email)) {
-                alert('Please enter a valid email address.');
-                return;
-            }
-            
-            // Show loading state
-            const button = event.target;
-            const originalText = button.textContent;
-            button.textContent = 'Setting up payment...';
-            button.disabled = true;
-            
-            try {
-                // Create checkout session
-                const response = await fetch('/api/create-checkout-session', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        priceId: product.priceId,
-                        customerEmail: email,
-                        planType: planType
-                    })
-                });
-                
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.message || 'Payment setup failed');
-                }
-                
-                const { url } = await response.json();
-                
-                // Redirect to Stripe Checkout
-                window.location.href = url;
-                
-            } catch (error) {
-                console.error('Payment error:', error);
-                alert(`Payment setup failed: ${error.message}. Please try again or contact support.`);
-                
-                // Restore button
-                button.textContent = originalText;
-                button.disabled = false;
-            }
-        }
-        
-        // Contact sales for enterprise
-        function contactSales() {
-            const email = 'sales@easyotpauth.com';
-            const subject = 'Enterprise Plan Inquiry';
-            const body = `Hi,
-
-I'm interested in the Enterprise plan for EasyOTPAuth. Could you please provide more information about:
-
-- Custom pricing options
-- Dedicated support
-- On-premise deployment
-- White-label solutions
-- Custom integrations
-
-My company details:
-- Company name: 
-- Expected monthly authentications: 
-- Integration timeline: 
-- Special requirements: 
-
-Thank you!`;
-            
-            const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            window.location.href = mailtoLink;
-        }
-        
-        // Email validation helper
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        }
-        
-        // Make functions globally available
-        window.subscribeToPlan = subscribeToPlan;
-        window.contactSales = contactSales;
-        
-        // =============== PAYMENT FUNCTIONS ===============
-        
-        // Stripe pricing configuration
-        const STRIPE_PLANS = {
-            starter: {
-                priceId: 'price_starter_monthly', // Will be replaced with actual Stripe price ID
-                name: 'Starter Plan',
-                price: '$29/month'
-            },
-            professional: {
-                priceId: 'price_professional_monthly', // Will be replaced with actual Stripe price ID
-                name: 'Professional Plan',
-                price: '$149/month'
-            }
-        };
-
-        // Subscribe to a plan
-        async function subscribeToPlan(planType) {
-            const plan = STRIPE_PLANS[planType];
-            if (!plan) {
-                alert('Invalid plan selected');
-                return;
-            }
-
-            // Get customer email
-            const email = prompt(`Enter your email address to start your free trial for the ${plan.name}:`);
-            if (!email || !isValidEmail(email)) {
-                alert('Please enter a valid email address');
-                return;
-            }
-
-            try {
-                showLoading(`Setting up your ${plan.name} subscription...`);
-
-                const response = await fetch('/api/create-checkout-session', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        priceId: plan.priceId,
-                        customerEmail: email,
-                        planType: planType
-                    })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || 'Failed to create checkout session');
-                }
-
-                // Redirect to Stripe Checkout
-                window.location.href = data.url;
-
-            } catch (error) {
-                console.error('Subscription error:', error);
-                alert(`Failed to start subscription: ${error.message}\n\nPlease try again or contact support.`);
-            } finally {
-                hideLoading();
-            }
-        }
-
-        // Contact sales for enterprise
-        function contactSales() {
-            const subject = encodeURIComponent('Enterprise Plan Inquiry - EasyOTPAuth');
-            const body = encodeURIComponent(`Hi,
-
-I'm interested in the Enterprise plan for EasyOTPAuth. Could you please provide more information about:
-
-- Custom pricing options
-- On-premise deployment
-- White-label solutions
-- Dedicated support
-
-My requirements:
-- Expected monthly authentications: 
-- Organization size:
-- Specific integration needs:
-
-Thank you!`);
-            
-            window.location.href = `mailto:sales@easyotpauth.com?subject=${subject}&body=${body}`;
-        }
-
-        // Email validation
-        function isValidEmail(email) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        }
-
-        // Show loading state
-        function showLoading(message = 'Processing...') {
-            // Create or update loading overlay
-            let overlay = document.getElementById('payment-loading');
-            if (!overlay) {
-                overlay = document.createElement('div');
-                overlay.id = 'payment-loading';
-                overlay.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.8);
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 9999;
-                    color: white;
-                    font-size: 18px;
-                `;
-                document.body.appendChild(overlay);
-            }
-            
-            overlay.innerHTML = `
-                <div style="text-align: center;">
-                    <div style="border: 4px solid #f3f3f3; border-top: 4px solid #FFA500; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
-                    <div>${message}</div>
-                </div>
-                <style>
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-                </style>
-            `;
-            overlay.style.display = 'flex';
-        }
-
-        // Hide loading state
-        function hideLoading() {
-            const overlay = document.getElementById('payment-loading');
-            if (overlay) {
-                overlay.style.display = 'none';
-            }
-        }
-        
-        // Handle successful payment (called from success page)
-        function handlePaymentSuccess() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const sessionId = urlParams.get('session_id');
-            
-            if (sessionId) {
-                showSuccess('Payment successful! Check your email for your API key and dashboard access.');
-            }
-        }
-        
-        // Call on page load if this is a success page
-        if (window.location.pathname === '/success' || window.location.search.includes('session_id')) {
-            handlePaymentSuccess();
-        }
-
-        // =============== NEW ANIMATION FUNCTIONS ===============
-        
-        // Intersection Observer for fade-in animations
-        function initScrollAnimations() {
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, observerOptions);
-
-            // Observe all fade-in elements
-            document.querySelectorAll('.fade-in').forEach(el => {
-                observer.observe(el);
-            });
-        }
-
-        // Counter animations
-        function animateCounters() {
-            const counters = document.querySelectorAll('.counter-animation');
-            
-            const counterObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const counter = entry.target;
-                        const target = parseInt(counter.dataset.count);
-                        let current = 0;
-                        const increment = target / 100;
-                        const timer = setInterval(() => {
-                            current += increment;
-                            if (current >= target) {
-                                counter.textContent = target + (target === 98 ? '%' : target === 3 ? 'x' : '');
-                                clearInterval(timer);
-                            } else {
-                                counter.textContent = Math.floor(current) + (target === 98 ? '%' : target === 3 ? 'x' : '');
-                            }
-                        }, 20);
-                        
-                        // Unobserve after animation starts
-                        counterObserver.unobserve(counter);
-                    }
-                });
-            }, { threshold: 0.5 });
-
-            counters.forEach(counter => {
-                counterObserver.observe(counter);
-            });
-        }
-
-        // Video placeholder interaction
-        function playVideo() {
-            const placeholder = document.querySelector('.video-placeholder');
-            
-            // Create video element or iframe
-            const videoHtml = `
-                <iframe 
-                    src="https://player.vimeo.com/video/placeholder?autoplay=1&title=0&byline=0&portrait=0" 
-                    frameborder="0" 
-                    allow="autoplay; fullscreen; picture-in-picture" 
-                    allowfullscreen
-                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
-                    onload="this.style.opacity='1'"
-                    style="opacity: 0; transition: opacity 0.3s ease;"
-                >
-                </iframe>
-            `;
-            
-            // Replace placeholder with video
-            placeholder.innerHTML = videoHtml;
-            placeholder.style.border = 'none';
-            placeholder.style.background = '#000';
-            
-            // Note: In production, replace with actual video URL
-            // For demo purposes, showing placeholder interaction
-            setTimeout(() => {
-                placeholder.innerHTML = `
-                    <div style="color: white; text-align: center; padding: 60px 20px;">
-                        <h3 style="font-size: 24px; margin-bottom: 16px;">🎬 Video Coming Soon</h3>
-                        <p style="opacity: 0.8;">This will show the complete EasyOTPAuth demo video</p>
-                        <button onclick="location.reload()" style="margin-top: 20px; padding: 12px 24px; background: #FFA500; color: white; border: none; border-radius: 8px; cursor: pointer;">
-                            ← Back to Placeholder
-                        </button>
-                    </div>
-                `;
-            }, 1000);
-        }
-
-        // Enhanced hover effects for feature cards
-        function initFeatureCardEffects() {
-            const cards = document.querySelectorAll('.hover-lift');
-            
-            cards.forEach(card => {
-                card.addEventListener('mouseenter', () => {
-                    // Add subtle rotation to icons on hover
-                    const icon = card.querySelector('.feature-icon');
-                    if (icon) {
-                        icon.style.transform = 'scale(1.1) rotate(5deg)';
-                    }
-                });
-                
-                card.addEventListener('mouseleave', () => {
-                    const icon = card.querySelector('.feature-icon');
-                    if (icon) {
-                        icon.style.transform = 'scale(1) rotate(0deg)';
-                    }
-                });
-            });
-        }
-
-        // ROI Calculator Enhancement
-        function initROICalculator() {
-            const roiSection = document.querySelector('#success-metrics');
-            let hasAnimated = false;
-            
-            const roiObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && !hasAnimated) {
-                        hasAnimated = true;
-                        
-                        // Animate ROI numbers with stagger effect
-                        const roiNumbers = roiSection.querySelectorAll('.text-4xl.font-black');
-                        roiNumbers.forEach((number, index) => {
-                            setTimeout(() => {
-                                number.style.transform = 'scale(1.1)';
-                                number.style.transition = 'transform 0.3s ease';
-                                
-                                setTimeout(() => {
-                                    number.style.transform = 'scale(1)';
-                                }, 300);
-                            }, index * 200);
-                        });
-                    }
-                });
-            }, { threshold: 0.3 });
-            
-            roiObserver.observe(roiSection);
-        }
-
-        // Enhanced CTA Banner Animation
-        function initCTABannerEffects() {
-            const ctaBanner = document.querySelector('.cta-banner');
-            const ctaButton = ctaBanner?.querySelector('.pulse');
-            
-            if (ctaButton) {
-                // Add enhanced pulse effect on scroll into view
-                const ctaObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            ctaButton.style.animation = 'pulse 2s infinite';
-                        } else {
-                            ctaButton.style.animation = 'none';
-                        }
-                    });
-                }, { threshold: 0.5 });
-                
-                ctaObserver.observe(ctaBanner);
-            }
-        }
-
-        // Mobile responsiveness enhancements
-        function initMobileOptimizations() {
-            // Adjust animations for mobile
-            if (window.innerWidth < 768) {
-                // Reduce animation intensity on mobile
-                const style = document.createElement('style');
-                style.textContent = `
-                    .hover-lift:hover {
-                        transform: translateY(-4px) scale(1.01);
-                    }
-                    .video-play-btn {
-                        width: 60px;
-                        height: 60px;
-                        font-size: 24px;
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-        }
-
-        // Initialize all new features
-        function initEnhancements() {
-            initScrollAnimations();
-            animateCounters();
-            initFeatureCardEffects();
-            initROICalculator();
-            initCTABannerEffects();
-            initMobileOptimizations();
-        }
-
-        // Start enhancements after DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            // Existing initialization
-            startTypewriter();
-            emailInput.focus();
-            
-            // New enhancements
-            initEnhancements();
-        });
-
-        // Handle window resize for responsive animations
-        window.addEventListener('resize', initMobileOptimizations);
-
-        // Make video function globally available
-        window.playVideo = playVideo;
     </script>
 </body>
 </html>
