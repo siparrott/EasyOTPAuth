@@ -1,35 +1,24 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ success: false, message: 'Method not allowed' });
-  }
-
-  const { email } = req.body;
-
-  if (!email || !email.includes('@')) {
-    return res.status(400).json({ success: false, message: 'Valid email is required' });
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    // Generate a 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    
-    // For now, just log the OTP (in production, send real email)
-    console.log(`🔐 OTP for ${email}: ${otp}`);
-    
-    // Simulate email sending delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    return res.status(200).json({ 
-      success: true, 
-      message: `Magic code sent to ${email}! (Check console for code)` 
+    const { email } = req.body;
+
+    if (!email || !email.includes('@')) {
+      return res.status(400).json({ error: 'Invalid email address' });
+    }
+
+    console.log('Simulated OTP sent to:', email);
+    return res.status(200).json({
+      success: true,
+      message: `OTP (pretend) sent to ${email}`
     });
-    
-  } catch (error) {
-    console.error('❌ OTP error:', error);
-    return res.status(500).json({ 
-      success: false, 
-      message: 'Failed to send magic code. Please try again.' 
-    });
+
+  } catch (err) {
+    console.error('OTP handler error:', err);
+    return res.status(500).json({ error: 'Internal server error during OTP send' });
   }
 }
 

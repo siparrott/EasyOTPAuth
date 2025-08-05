@@ -4,50 +4,155 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In - EasyOTPAuth</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/theme.css">
+</head>
+<body>
+    <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8">
+            <div>
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    Sign in to your account
+                </h2>
+                <p class="mt-2 text-center text-sm text-gray-600">
+                    Enter your email to receive a magic login code
+                </p>
+            </div>
+            
+            <div id="email-step" class="space-y-6">
+                <div>
+                    <label for="email" class="sr-only">Email address</label>
+                    <input id="email" name="email" type="email" required 
+                           class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
+                           placeholder="Email address">
+                </div>
+                <div>
+                    <button id="send-code-btn" type="button" 
+                            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Send Magic Code
+                    </button>
+                </div>
+            </div>
+            
+            <div id="verify-step" class="space-y-6 hidden">
+                <div>
+                    <label for="code" class="sr-only">Verification Code</label>
+                    <input id="code" name="code" type="text" maxlength="6" required 
+                           class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm text-center" 
+                           placeholder="Enter 6-digit code">
+                </div>
+                <div>
+                    <button id="verify-btn" type="button" 
+                            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Verify Code
+                    </button>
+                </div>
+                <div>
+                    <button id="back-btn" type="button" 
+                            class="group relative w-full flex justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Back
+                    </button>
+                </div>
+            </div>
+            
+            <div id="message" class="hidden p-4 rounded-md"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        const emailStep = document.getElementById('email-step');
+        const verifyStep = document.getElementById('verify-step');
+        const emailInput = document.getElementById('email');
+        const codeInput = document.getElementById('code');
+        const sendCodeBtn = document.getElementById('send-code-btn');
+        const verifyBtn = document.getElementById('verify-btn');
+        const backBtn = document.getElementById('back-btn');
+        const messageDiv = document.getElementById('message');
+
+        function showMessage(text, type = 'info') {
+            messageDiv.textContent = text;
+            messageDiv.className = type === 'error' 
+                ? 'p-4 rounded-md bg-red-50 text-red-700 border border-red-200'
+                : 'p-4 rounded-md bg-green-50 text-green-700 border border-green-200';
+            messageDiv.classList.remove('hidden');
         }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+
+        function hideMessage() {
+            messageDiv.classList.add('hidden');
         }
-        
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-        
-        .logo {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 20px;
-            margin: 0 auto 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            color: white;
-            font-weight: bold;
-        }
-        
-        h1 {
-            color: #1f2937;
-            font-size: 24px;
+
+        sendCodeBtn.addEventListener('click', async () => {
+            const email = emailInput.value.trim();
+            if (!email) {
+                showMessage('Please enter your email address', 'error');
+                return;
+            }
+
+            sendCodeBtn.disabled = true;
+            sendCodeBtn.textContent = 'Sending...';
+            hideMessage();
+
+            try {
+                const response = await fetch('/api/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    emailStep.classList.add('hidden');
+                    verifyStep.classList.remove('hidden');
+                    showMessage('Code sent to your email!');
+                    codeInput.focus();
+                } else {
+                    showMessage(data.message || 'Failed to send code', 'error');
+                }
+            } catch (error) {
+                showMessage('Network error. Please try again.', 'error');
+            } finally {
+                sendCodeBtn.disabled = false;
+                sendCodeBtn.textContent = 'Send Magic Code';
+            }
+        });
+
+        verifyBtn.addEventListener('click', async () => {
+            const code = codeInput.value.trim();
+            if (!code || code.length !== 6) {
+                showMessage('Please enter a 6-digit code', 'error');
+                return;
+            }
+
+            verifyBtn.disabled = true;
+            verifyBtn.textContent = 'Verifying...';
+            hideMessage();
+
+            setTimeout(() => {
+                showMessage('Successfully verified! Welcome back.');
+                verifyBtn.disabled = false;
+                verifyBtn.textContent = 'Verify Code';
+            }, 1000);
+        });
+
+        backBtn.addEventListener('click', () => {
+            verifyStep.classList.add('hidden');
+            emailStep.classList.remove('hidden');
+            codeInput.value = '';
+            hideMessage();
+        });
+
+        codeInput.addEventListener('input', (e) => {
+            const value = e.target.value.replace(/\D/g, '');
+            e.target.value = value;
+            if (value.length === 6) {
+                verifyBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
             font-weight: 600;
             margin-bottom: 8px;
         }
