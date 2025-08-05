@@ -34,6 +34,7 @@
     "handlebars": "^4.7.8",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "node-fetch": "^2.7.0",
     "nodemailer": "^6.9.8",
     "redis": "^4.6.7",
     "stripe": "^14.12.0",
