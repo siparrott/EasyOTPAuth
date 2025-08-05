@@ -3,75 +3,451 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In - RapidAuth.pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/theme.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#FFA500',
-                        'primary-dark': '#FF8C00',
-                        secondary: '#6B7280',
-                        accent: '#10B981'
-                    },
-                    fontFamily: {
-                        'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif']
-                    }
-                }
+    <title>Sign In - EasyOTPAuth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        h1 {
+            color: #1f2937;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            color: #374151;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        input[type="email"], input[type="text"] {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+        }
+        
+        input[type="email"]:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-loading {
+            color: transparent;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .step {
+            display: none;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        .message {
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .message.success {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        
+        .message.error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        
+        .message.info {
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #3b82f6;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .back-btn {
+            background: #f3f4f6;
+            color: #374151;
+            border: 2px solid #e5e7eb;
+            margin-right: 12px;
+            width: auto;
+            padding: 12px 24px;
+            font-size: 14px;
+        }
+        
+        .back-btn:hover {
+            background: #e5e7eb;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .code-input {
+            text-align: center;
+            font-size: 24px;
+            letter-spacing: 8px;
+            font-weight: 600;
+        }
+        
+        .resend-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            margin-top: 16px;
+            display: inline-block;
+        }
+        
+        .resend-link:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 24px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 24px;
             }
         }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Logo -->
+        <div class="logo">
+            🔐
+        </div>
+        
+        <!-- Step 1: Email Input -->
+        <div id="step-email" class="step active">
+            <h1>Welcome Back</h1>
+            <p class="subtitle">Enter your email to receive a magic login code</p>
+            
+            <div id="email-message" class="message hidden"></div>
+            
+            <form id="email-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="you@example.com">
+                </div>
+                
+                <button type="submit" id="send-code-btn" class="btn">
+                    Send Magic Code
+                </button>
+            </form>
+        </div>
+        
+        <!-- Step 2: Code Verification -->
+        <div id="step-verification" class="step">
+            <h1>Check Your Email</h1>
+            <p class="subtitle">We sent a 6-digit code to <span id="user-email"></span></p>
+            
+            <div id="verification-message" class="message hidden"></div>
+            
+            <form id="verification-form">
+                <div class="form-group">
+                    <label for="code">Enter Code</label>
+                    <input type="text" id="code" name="code" required placeholder="000000" maxlength="6" class="code-input">
+                </div>
+                
+                <div style="display: flex; gap: 12px;">
+                    <button type="button" id="back-btn" class="btn back-btn">Back</button>
+                    <button type="submit" id="verify-btn" class="btn" style="flex: 1;">
+                        Verify & Sign In
+                    </button>
+                </div>
+            </form>
+            
+            <a href="#" id="resend-link" class="resend-link">Didn't receive the code? Resend</a>
+        </div>
+        
+        <!-- Step 3: Success -->
+        <div id="step-success" class="step">
+            <h1>🎉 Success!</h1>
+            <p class="subtitle">You have been successfully authenticated</p>
+            
+            <div class="message success">
+                Welcome! You are now signed in to your account.
+            </div>
+            
+            <button onclick="window.location.reload()" class="btn">
+                Sign In Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const emailStep = document.getElementById('step-email');
+        const verificationStep = document.getElementById('step-verification');
+        const successStep = document.getElementById('step-success');
+        const emailForm = document.getElementById('email-form');
+        const verificationForm = document.getElementById('verification-form');
+        const emailInput = document.getElementById('email');
+        const codeInput = document.getElementById('code');
+        const userEmailSpan = document.getElementById('user-email');
+        const sendCodeBtn = document.getElementById('send-code-btn');
+        const verifyBtn = document.getElementById('verify-btn');
+        const backBtn = document.getElementById('back-btn');
+        const resendLink = document.getElementById('resend-link');
+        const emailMessage = document.getElementById('email-message');
+        const verificationMessage = document.getElementById('verification-message');
+
+        let currentEmail = '';
+
+        // Utility functions
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            step.classList.add('active');
+        }
+
+        function showMessage(element, message, type = 'info') {
+            element.className = `message ${type}`;
+            element.textContent = message;
+            element.classList.remove('hidden');
+        }
+
+        function hideMessage(element) {
+            element.classList.add('hidden');
+        }
+
+        function setLoading(button, loading) {
+            if (loading) {
+                button.classList.add('btn-loading');
+                button.disabled = true;
+            } else {
+                button.classList.remove('btn-loading');
+                button.disabled = false;
+            }
+        }
+
+        // API functions
+        async function sendOTP(email) {
+            const response = await fetch('/api/send-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email })
+            });
+
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to send code');
+            }
+            
+            return data;
+        }
+
+        async function verifyOTP(email, code) {
+            const response = await fetch('/api/verify-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, code })
+            });
+
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.message || 'Verification failed');
+            }
+            
+            return data;
+        }
+
+        // Event handlers
+        emailForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim();
+            if (!email) return;
+
+            setLoading(sendCodeBtn, true);
+            hideMessage(emailMessage);
+
+            try {
+                await sendOTP(email);
+                currentEmail = email;
+                userEmailSpan.textContent = email;
+                showStep(verificationStep);
+                codeInput.focus();
+            } catch (error) {
+                showMessage(emailMessage, error.message, 'error');
+            } finally {
+                setLoading(sendCodeBtn, false);
+            }
+        });
+
+        verificationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const code = codeInput.value.trim();
+            if (!code || code.length !== 6) {
+                showMessage(verificationMessage, 'Please enter a 6-digit code', 'error');
+                return;
+            }
+
+            setLoading(verifyBtn, true);
+            hideMessage(verificationMessage);
+
+            try {
+                await verifyOTP(currentEmail, code);
+                showStep(successStep);
+            } catch (error) {
+                showMessage(verificationMessage, error.message || 'Invalid code', 'error');
+                codeInput.select();
+            } finally {
+                setLoading(verifyBtn, false);
+            }
+        });
+
+        backBtn.addEventListener('click', () => {
+            showStep(emailStep);
+            hideMessage(verificationMessage);
+            codeInput.value = '';
+        });
+
+        resendLink.addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            try {
+                await sendOTP(currentEmail);
+                showMessage(verificationMessage, 'New code sent to your email', 'success');
+            } catch (error) {
+                showMessage(verificationMessage, 'Failed to resend code', 'error');
+            }
+        });
+
+        // Auto-focus email input on load
+        emailInput.focus();
+
+        // Auto-advance code input
+        codeInput.addEventListener('input', (e) => {
+            const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+            e.target.value = value;
+            
+            if (value.length === 6) {
+                verificationForm.dispatchEvent(new Event('submit'));
+            }
+        });
     </script>
-    <style>
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        
-        .gradient-bg {
-            background: linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 100%);
-        }
-        
-        .logo-img {
-            height: 80px;
-            width: auto;
-        }
-        
-        .btn-primary {
-            background: #FFA500;
-            color: white;
-            font-weight: 600;
-            padding: 12px 24px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            background: #FF8C00;
-            transform: translateY(-2px);
-        }
-        
-        .btn-secondary {
-            background: white;
-            color: #374151;
-            font-weight: 600;
-            padding: 12px 24px;
-            border-radius: 8px;
-            border: 2px solid #E5E7EB;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-secondary:hover {
-            border-color: #FFA500;
-            transform: translateY(-2px);
-        }
-        
-        .demo-widget {
+</body>
+</html>
             background: white;
             border-radius: 16px;
             padding: 32px;
