@@ -1,27 +1,37 @@
-import nodemailer from 'nodemailer';
-
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).end();
+  if (req.method !== 'POST') {
+    return res.status(405).json({ success: false, message: 'Method not allowed' });
+  }
 
   const { email } = req.body;
 
-  if (!email) {
-    return res.status(400).json({ success: false, message: 'Email is required' });
+  if (!email || !email.includes('@')) {
+    return res.status(400).json({ success: false, message: 'Valid email is required' });
   }
 
   try {
     // Generate a 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
+    // For now, just log the OTP (in production, send real email)
+    console.log(`🔐 OTP for ${email}: ${otp}`);
+    
+    // Simulate email sending delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    return res.status(200).json({ 
+      success: true, 
+      message: `Magic code sent to ${email}! (Check console for code)` 
     });
+    
+  } catch (error) {
+    console.error('❌ OTP error:', error);
+    return res.status(500).json({ 
+      success: false, 
+      message: 'Failed to send magic code. Please try again.' 
+    });
+  }
+}
 
     // Create a beautiful HTML email
     const htmlContent = `
