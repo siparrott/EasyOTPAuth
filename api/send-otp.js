@@ -13,124 +13,59 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true });
     }
 
-    if (req.method !== "POST") {
-      return res.status(405).json({ success: false, error: "Method not allowed" });
+const nodemailer = require('nodemailer');
+
+function required(name) {
+  const v = process.env[name];
+  if (!v) throw new Error(`Missing env: ${name}`);
+  return v;
+}
+
+module.exports = async (req, res) => {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+  try {
+    const { email } = req.body || {};
+    if (!email || !/.+@.+\..+/.test(email)) {
+      return res.status(400).json({ error: 'Invalid email' });
     }
 
-    // Validate request body
-    if (!req.body || typeof req.body !== 'object') {
-      return res.status(400).json({ success: false, error: "Invalid request body" });
-    }
+    // Generate a 6-digit code
+    const code = String(Math.floor(100000 + Math.random() * 900000));
 
-    const { email } = req.body;
-
-    // Validate email
-    if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return res.status(400).json({ success: false, error: "Valid email is required" });
-    }
-
-    // Check SMTP configuration first
-    const requiredEnvVars = ['SMTP_HOST', 'SMTP_USER', 'SMTP_PASS'];
-    const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
-    
-    if (missingVars.length > 0) {
-      console.error('Missing SMTP environment variables:', missingVars);
-      return res.status(500).json({ 
-        success: false, 
-        error: "Email service not configured. Missing environment variables: " + missingVars.join(', ')
-      });
-    }
-
-    const otp = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
-
-    // Store OTP using Supabase (with fallback to memory)
-    const storeResult = await otpStore.storeOTP(email, otp.toString(), 10);
-
-    // 🧪 DEBUG LOGGING (remove in production)
-    console.log(`🔄 Generated OTP for ${email}: ${otp}`);
-    console.log(`📊 OTP stored in ${storeResult ? 'database' : 'memory'}`);
-    console.log(`🔄 Attempting to send OTP to: ${email}`);
-    console.log(`📧 SMTP Config: ${process.env.SMTP_HOST}:${process.env.SMTP_PORT || 465}`);
-
-    try {
-  const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT) || 465,
-        secure: process.env.SMTP_SECURE === 'true' || true,
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-        debug: process.env.NODE_ENV === 'development',
-        logger: process.env.NODE_ENV === 'development'
-      });
-
-      // Verify transporter configuration
-      await transporter.verify();
-      console.log('✅ SMTP connection verified');
-
-      const mailResult = await transporter.sendMail({
-        from: process.env.MAIL_FROM || `"EasyOTPAuth" <${process.env.SMTP_USER}>`,
-        to: email,
-        subject: "Your EasyOTPAuth Login Code",
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #2563eb;">Your EasyOTPAuth Login Code</h2>
-            <p>Use this code to complete your authentication:</p>
-            <div style="background: #f3f4f6; padding: 20px; text-align: center; margin: 20px 0; border-radius: 8px;">
-              <span style="font-size: 32px; font-weight: bold; color: #1f2937; letter-spacing: 4px;">${otp}</span>
-            </div>
-            <p style="color: #6b7280;">This code will expire in 10 minutes.</p>
-            <p style="color: #6b7280; font-size: 14px;">If you didn't request this code, please ignore this email.</p>
-          </div>
-        `,
-        text: `Your EasyOTPAuth login code is: ${otp}. This code expires in 10 minutes.`,
-      });
-
-      console.log(`✅ OTP sent to ${email}. MessageID: ${mailResult.messageId}`);
-      return res.status(200).json({ 
-        success: true, 
-        message: "OTP sent successfully",
-        messageId: mailResult.messageId 
-      });
-
-    } catch (emailError) {
-      console.error('❌ Email sending failed:', {
-        message: emailError.message,
-        code: emailError.code,
-        command: emailError.command,
-        response: emailError.response,
-        responseCode: emailError.responseCode
-      });
-
-      // Return specific error messages based on error type
-      let errorMessage = "Failed to send email";
-      
-      if (emailError.code === 'EAUTH') {
-        errorMessage = "Email authentication failed. Please check SMTP credentials.";
-      } else if (emailError.code === 'ECONNECTION') {
-        errorMessage = "Could not connect to email server. Please check SMTP settings.";
-      } else if (emailError.code === 'EMESSAGE') {
-        errorMessage = "Email message format error.";
-      } else if (emailError.responseCode >= 500) {
-        errorMessage = "Email server error. Please try again later.";
-      } else if (emailError.responseCode >= 400) {
-        errorMessage = "Email rejected by server. Please check the email address.";
+    // SMTP transport (Easyname)
+    const transporter = nodemailer.createTransport({
+      host: required('SMTP_HOST'),               // smtp.easyname.com
+      port: Number(required('SMTP_PORT')),       // 587
+      secure: process.env.SMTP_SECURE === 'true',
+      auth: {
+        user: required('SMTP_USER'),             // mailbox ID, e.g. 30840mail16
+        pass: required('SMTP_PASS')
       }
-
-      return res.status(500).json({ 
-        success: false, 
-        error: errorMessage,
-        details: process.env.NODE_ENV === 'development' ? emailError.message : undefined
-      });
-    }
-
-  } catch (globalError) {
-    console.error('❌ Unexpected error in send-otp handler:', globalError);
-    return res.status(500).json({ 
-      success: false, 
-      error: "Internal server error",
-      details: process.env.NODE_ENV === 'development' ? globalError.message : undefined
     });
+
+    const from = process.env.MAIL_FROM || 'EasyOTPAuth <hello@easyotpauth.com>';
+
+    const text = `Your EasyOTPAuth code is ${code}. It expires in 10 minutes.`;
+    const html = `
+      <div style="font-family:system-ui,Segoe UI,Roboto,Arial">
+        <h2>EasyOTPAuth</h2>
+        <p>Your sign-in code:</p>
+        <div style="font-size:28px;font-weight:700;letter-spacing:6px">${code}</div>
+        <p style="color:#555">Expires in 10 minutes.</p>
+      </div>
+    `;
+
+    await transporter.sendMail({
+      from, to: email, subject: 'Your Magic Code', text, html
+    });
+
+    // Optionally: store code in a cache/DB tied to the email.
+    // For now, return it so you can wire your verify step (remove in prod).
+    return res.status(200).json({ ok: true });
+  } catch (err) {
+    console.error('send-otp error:', err);
+    return res.status(500).json({ error: 'Failed to send', detail: String(err.message || err) });
   }
+};
 }
