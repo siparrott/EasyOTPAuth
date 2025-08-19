@@ -1,108 +1,68 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In - EasyOTPAuth</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/theme.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sign In – EasyOTPAuth</title>
+    <style>
+        :root { --bg:#f7f7fb; --fg:#1f2937; --accent:#667eea; --accent2:#764ba2; }
+        body { margin:0; font-family: ui-sans-serif,system-ui,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--fg); }
+        .container { min-height:100svh; display:grid; place-items:center; padding:24px; }
+        .card { background:#fff; max-width:420px; width:100%; padding:32px; border-radius:16px;
+                        box-shadow:0 18px 40px rgba(0,0,0,.08); }
+        h1 { margin:0 0 8px; font-size:28px; font-weight:700; }
+        .subtitle { margin:0 0 24px; color:#6b7280; font-size:15px; }
+        label { display:block; font-weight:600; margin:12px 0 8px; }
+        input { width:100%; padding:14px 16px; border:2px solid #e5e7eb; border-radius:10px; font-size:16px;
+                        background:#f9fafb; transition:border-color .2s; }
+        input:focus { outline:0; border-color:var(--accent); background:#fff; }
+        .btn { width:100%; padding:14px; margin-top:16px; border:0; border-radius:10px; color:#fff; font-weight:700;
+                     background:linear-gradient(135deg, var(--accent), var(--accent2)); cursor:pointer; }
+        .btn[disabled] { opacity:.6; cursor:not-allowed; }
+        .row { display:flex; gap:10px; }
+        .btn-secondary { background:#f3f4f6; color:#374151; border:2px solid #e5e7eb; }
+        .message { margin:16px 0; padding:12px; border-radius:8px; font-weight:600; font-size:14px; display:none; }
+        .message.show { display:block; }
+        .message.success { background:#ecfdf5; color:#065f46; border:1px solid #10b981; }
+        .message.error { background:#fef2f2; color:#991b1b; border:1px solid #ef4444; }
+        .message.info { background:#eff6ff; color:#1e40af; border:1px solid #3b82f6; }
+        .step { display:none; }
+        .step.active { display:block; }
+    </style>
 </head>
 <body>
-    <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-md w-full space-y-8">
-            <div>
-                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                    Sign in to your account
-                </h2>
-                <p class="mt-2 text-center text-sm text-gray-600">
-                    Enter your email to receive a magic login code
-                </p>
+    <main class="container">
+        <section class="card">
+            <h1>Sign in to your account</h1>
+            <p class="subtitle">Enter your email to receive a magic login code</p>
+
+            <!-- Step 1 -->
+            <div id="step-email" class="step active">
+                <form id="email-form">
+                    <label for="email">Email address</label>
+                    <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required />
+                    <button id="send-btn" class="btn" type="submit">Send Magic Code</button>
+                </form>
             </div>
-            
-            <div id="email-step" class="space-y-6">
-                <div>
-                    <label for="email" class="sr-only">Email address</label>
-                    <input id="email" name="email" type="email" required 
-                           class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
-                           placeholder="Email address">
-                </div>
-                <div>
-                    <button id="send-code-btn" type="button" 
-                            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Send Magic Code
-                    </button>
-                </div>
+
+            <!-- Step 2 -->
+            <div id="step-verify" class="step">
+                <form id="verify-form">
+                    <label for="code">Verification Code</label>
+                    <input id="code" name="code" type="text" inputmode="numeric" maxlength="6" placeholder="Enter 6-digit code" />
+                    <div class="row">
+                        <button id="back-btn" class="btn btn-secondary" type="button">Back</button>
+                        <button id="verify-btn" class="btn" type="submit">Verify Code</button>
+                    </div>
+                </form>
             </div>
-            
-            <div id="verify-step" class="space-y-6 hidden">
-                <div>
-                    <label for="code" class="sr-only">Verification Code</label>
-                    <input id="code" name="code" type="text" maxlength="6" required 
-                           class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm text-center" 
-                           placeholder="Enter 6-digit code">
-                </div>
-                <div>
-                    <button id="verify-btn" type="button" 
-                            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Verify Code
-                    </button>
-                </div>
-                <div>
-                    <button id="back-btn" type="button" 
-                            class="group relative w-full flex justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Back
-                    </button>
-                </div>
-            </div>
-            
-            <div id="message" class="hidden p-4 rounded-md"></div>
-        </div>
-    </div>
 
-        <script>
-(() => {
-    const form   = document.querySelector('#login-form') || document.querySelector('form');
-    const email  = document.querySelector('#email');
-    const send   = document.querySelector('#send-code-btn');
-    const stepEmail  = document.querySelector('#email-step') || document.querySelector('#step-email');
-    const stepVerify = document.querySelector('#verify-step') || document.querySelector('#step-verification');
-    const msg    = document.querySelector('#message') || (() => { const d=document.createElement('div'); d.id='message'; document.body.appendChild(d); return d; })();
+            <div id="message" class="message"></div>
+        </section>
+    </main>
 
-    const show = (type, text) => { msg.className = 'message ' + type; msg.textContent = text; msg.classList.remove('hidden'); };
-    const hide = () => msg.classList.add('hidden');
-
-    async function sendMagicCode(e) {
-        e?.preventDefault();
-        hide();
-        const value = (email?.value || '').trim();
-        if (!value) return show('error', 'Please enter a valid email');
-
-        send?.setAttribute('disabled', 'true');
-        show('info', 'Sending…');
-
-        try {
-            const r = await fetch('/api/send-otp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: value })
-            });
-            const data = await r.json().catch(() => ({}));
-            if (!r.ok) throw new Error(data.detail || data.error || 'Server error');
-            show('success', 'Check your inbox for the code.');
-            stepEmail?.classList.add('hidden');
-            stepVerify?.classList.remove('hidden');
-        } catch (err) {
-            console.error(err);
-            show('error', 'Failed to send email');
-        } finally {
-            send?.removeAttribute('disabled');
-        }
-    }
-
-    form?.addEventListener('submit', sendMagicCode);
-    send?.addEventListener('click', sendMagicCode);
-})();
-        </script>
+    <!-- SINGLE script include. Do not add any other inline scripts on this page. -->
+    <script src="/js/login.js" defer></script>
 </body>
 </html>
             font-weight: 600;
