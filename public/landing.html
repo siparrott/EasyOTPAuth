@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Blink. You’re in. | EasyOTPAuth</title>
+  <style>
+    :root {
+      --primary: #667eea;
+      --primary2: #764ba2;
+      --accent: #fbbf24;
+      --bg: #f7f7fb;
+      --fg: #1f2937;
+      --radius: 16px;
+    }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, Segoe UI, Roboto, Arial;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 32px 16px 64px 16px;
+    }
+    .hero, .sabri, .stack, .offer, .proof, .bullets, .price, .faq, .retarget, .emails, .template {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 8px 32px rgba(0,0,0,.07);
+      margin-bottom: 32px;
+      padding: 32px 24px;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      margin-bottom: 24px;
+    }
+    .btn, .btn-primary {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      color: #fff;
+      font-weight: 700;
+      padding: 16px 32px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      text-decoration: none;
+      transition: background .2s, box-shadow .2s;
+      box-shadow: 0 2px 8px rgba(102,126,234,.08);
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: linear-gradient(135deg, var(--primary2), var(--primary));
+      box-shadow: 0 4px 16px rgba(102,126,234,.12);
+    }
+    .sabri strong {
+      font-weight: 700;
+      color: var(--primary2);
+    }
+    ul {
+      padding-left: 1.2em;
+      margin: 0 0 16px 0;
+    }
+    li {
+      margin-bottom: 8px;
+      font-size: 1.08rem;
+    }
+    .offer ul, .bullets ul {
+      list-style: none;
+      padding: 0;
+    }
+    .offer li, .bullets li {
+      margin-bottom: 10px;
+      padding-left: 1.5em;
+      position: relative;
+    }
+    .offer li:before {
+      content: '✅';
+      position: absolute;
+      left: 0;
+    }
+    .bullets li:before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--primary2);
+      font-weight: bold;
+    }
+    .proof {
+      font-style: italic;
+      color: #374151;
+      background: #f9fafb;
+      border-left: 4px solid var(--primary2);
+    }
+    .faq dt {
+      font-weight: 700;
+      margin-top: 16px;
+    }
+    .faq dd {
+      margin: 0 0 12px 0;
+      color: #374151;
+    }
+    .retarget, .emails {
+      background: #f3f4f6;
+      border-radius: var(--radius);
+      font-size: 1rem;
+    }
+    .template {
+      background: #fffbe6;
+      border: 1px solid #fbbf24;
+      font-size: 1.08rem;
+    }
+    @media (max-width: 600px) {
+      .container { padding: 12px 2vw 32px 2vw; }
+      .hero h1 { font-size: 2rem; }
+      .btn { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>Blink. You’re in.</h1>
+      <p>That login was lightning-fast and passwordless—exactly what your clients deserve.</p>
+      <a class="btn btn-primary" href="/checkout">Get EasyOTPAuth →</a>
+      <p style="margin-top:18px;font-size:1.1rem;">Ship the same “wow, I’m already logged in” experience to every user, every time.</p>
+    </section>
+
+    <section class="sabri">
+      <p><strong>Look how fast that was. No passwords. No friction. No support tickets.</strong><br>
+      Your users didn’t “log in,” they glided in. That’s the new bar.<br>
+      If your product still drags people through clunky resets, you’re bleeding conversions.<br>
+      Give your clients what they deserve: instant, passwordless access.</p>
+      <a class="btn btn-primary" href="/checkout">Get EasyOTPAuth →</a>
+    </section>
+
+    <section class="stack">
+      <ul>
+        <li>Passwords kill momentum. People forget, reset, churn.</li>
+        <li>Support gets buried. “I can’t log in” eats your day.</li>
+        <li>Security suffers. Weak passwords = weak defence.</li>
+        <li><strong>EasyOTPAuth wipes that out with passwordless OTP that lands users in-app in seconds.</strong></li>
+      </ul>
+      <a class="btn btn-primary" href="/checkout">Get EasyOTPAuth →</a>
+    </section>
+
+    <section class="offer">
+      <ul>
+        <li>Unlimited OTP logins on your domain</li>
+        <li>⚡ &lt;300ms API average (region-aware)</li>
+        <li>🔐 One-tap magic links & 6-digit codes</li>
+        <li>🛡️ Device + IP throttling to stop abuse</li>
+        <li>🧰 Copy-paste UI: drop-in login.html & API route</li>
+        <li>📬 SMTP or Resend support (you choose)</li>
+        <li>📈 Conversion & deliverability dashboard</li>
+        <li>🛠️ Priority setup help (we jump on Zoom if needed)</li>
+        <li>🧪 A/B ready: measure uplift vs. passwords</li>
+      </ul>
+      <p>Today only: Founder price locked for 12 months + done-for-you onboarding.</p>
+      <a class="btn btn-primary" href="/checkout">Get EasyOTPAuth →</a>
+    </section>
+
+    <section class="proof">
+      <p>“Login success jumped 18% and tickets fell off a cliff.”<br>
+      “We cut forgot-password emails by 82% in week one.”<br>
+      “Time-to-value: hours, not weeks.”</p>
+      <a class="btn btn-primary" href="/checkout">Get EasyOTPAuth →</a>
+    </section>
+
+    <section class="bullets">
+      <ul>
+        <li>Faster first session → more users reach “aha!”</li>
+        <li>Fewer support tickets → happier team, lower costs</li>
+        <li>Stronger security → no weak passwords to leak</li>
+        <li>Happier clients → the smooth, modern flow they expect</li>
+      </ul>
+      <a class="btn btn-primary" href="/checkout">Get EasyOTPAuth →</a>
+    </section>
+
+    <section class="price">
+      <p>Hiring devs to build this? $8k–$20k + maintenance.<br>
+      Your price today: one simple plan, cancel anytime.<br>
+      <strong>30-day “Login-Lift” Guarantee:</strong> if your login rate doesn’t improve, we refund—no drama.</p>
+      <a class="btn btn-primary" href="/checkout">Get EasyOTPAuth →</a>
+    </section>
+
+    <section class="faq">
+      <dl>
+        <dt>Will this work with my stack?</dt>
+        <dd>Yes—drop-in HTML widget + a single API endpoint. Works with Node, Next, Rails, PHP, you name it.</dd>
+        <dt>SMTP or third-party email?</dt>
+        <dd>Either. Plug in Easyname/SMTP or Resend—we’ve included both recipes.</dd>
+        <dt>Is it secure?</dt>
+        <dd>Rate-limited OTPs, short expiry, device/IP checks, and optional domain lock.</dd>
+        <dt>What about branding?</dt>
+        <dd>Fully white-label. Your colors, your logo, your domain.</dd>
+      </dl>
+      <a class="btn btn-primary" href="/checkout">Get EasyOTPAuth →</a>
+    </section>
+
+    <section class="retarget">
+      <p>“Remember how fast you logged in? Ship that to your users today.”<br>
+      “Passwords are 2005. Your clients deserve instant access.”<br>
+      “Every extra second at login costs sign-ups. Kill the wait.”</p>
+      <a class="btn btn-primary" href="/checkout">Get EasyOTPAuth →</a>
+    </section>
+
+    <section class="emails">
+      <p><strong>5-email follow-up (one CTA per email)</strong></p>
+      <ul>
+        <li><strong>Subject 1:</strong> You just felt it—passwordless, instant, done<br>Body: That 3-second login? Make it standard. Your clients deserve it.<br><a class="btn btn-primary" href="/checkout">Get EasyOTPAuth →</a></li>
+        <li><strong>Subject 2:</strong> Stop losing users at the door<br>Body: Password resets are silent churn. Swap to instant OTP.<br><a class="btn btn-primary" href="/checkout">Get EasyOTPAuth →</a></li>
+        <li><strong>Subject 3:</strong> Support tickets down 80%? Here’s how<br>Body: Teams ditch “forgot password” hell with one endpoint.<br><a class="btn btn-primary" href="/checkout">Get EasyOTPAuth →</a></li>
+        <li><strong>Subject 4:</strong> Secure AND faster—pick both<br>Body: Short-lived codes, throttling, domain lock. Clean. Safe.<br><a class="btn btn-primary" href="/checkout">Get EasyOTPAuth →</a></li>
+        <li><strong>Subject 5:</strong> Last call for founder pricing<br>Body: Lock in today; upgrade your login forever.<br><a class="btn btn-primary" href="/checkout">Get EasyOTPAuth →</a></li>
+      </ul>
+    </section>
+
+    <section class="template">
+      <p><strong>One-CTA page template (paste into your site)</strong></p>
+      <section class="hero">
+        <h1>Blink. You’re in.</h1>
+        <p>Lightning-fast, passwordless logins—exactly what your clients deserve.</p>
+        <a class="btn btn-primary" href="/checkout">Get EasyOTPAuth →</a>
+      </section>
+      <section class="sabri">
+        <p><strong>No passwords. No friction. No resets.</strong> Your users didn’t “log in,” they glided in.
+        That’s the new bar. Give your clients what they deserve: instant access.</p>
+        <a class="btn btn-primary" href="/checkout">Get EasyOTPAuth →</a>
+      </section>
+      <section class="stack">
+        <ul>
+          <li>Unlimited OTP logins • &lt;300ms API • Magic links + codes</li>
+          <li>SMTP/Resend • Copy-paste UI • Abuse throttling • Analytics</li>
+          <li>Done-for-you onboarding • 30-day Login-Lift Guarantee</li>
+        </ul>
+        <a class="btn btn-primary" href="/checkout">Get EasyOTPAuth →</a>
+      </section>
+    </section>
+  </div>
+</body>
+</html>

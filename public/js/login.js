@@ -80,6 +80,9 @@
       return showMessage('error', 'Please enter the 6-digit code.');
     }
     showMessage('success', 'Success! You have been authenticated.');
+    setTimeout(() => {
+      window.location.href = '/landing.html';
+    }, 900);
   }
 
   emailForm?.addEventListener('submit', onSend);
