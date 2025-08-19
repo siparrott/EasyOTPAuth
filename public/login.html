@@ -309,13 +309,7 @@
             if (!response.ok) {
                 throw new Error(data.message || 'Failed to send code');
             }
-            
-            return data;
-        }
-
-        // Event handlers
-        sendCodeBtn.addEventListener('click', async () => {
-            const email = emailInput.value.trim();
+                <script src="/js/login.js" defer></script>
             if (!email) {
                 showMessage(emailMessage, 'Please enter your email address', 'error');
                 return;
