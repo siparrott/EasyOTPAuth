@@ -95,6 +95,11 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Serve login page
+app.get('/login.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
 // Serve email test page
 app.get('/email-test', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'email-test.html'));
