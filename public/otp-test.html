@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Test - EasyOTPAuth</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        .response { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #b6d4ea; }
+        input, button { margin: 5px; padding: 8px; }
+        button { background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>EasyOTPAuth - API Test Page</h1>
+    
+    <!-- Send OTP Test -->
+    <div class="test-section">
+        <h3>1. Send OTP Test</h3>
+        <input type="email" id="email" placeholder="Enter email address" value="test@example.com">
+        <button onclick="sendOTP()">Send OTP</button>
+        <div id="send-response" class="response"></div>
+    </div>
+    
+    <!-- Verify OTP Test -->
+    <div class="test-section">
+        <h3>2. Verify OTP Test</h3>
+        <input type="email" id="verify-email" placeholder="Email address" value="test@example.com">
+        <input type="text" id="otp" placeholder="6-digit OTP" maxlength="6">
+        <button onclick="verifyOTP()">Verify OTP</button>
+        <div id="verify-response" class="response"></div>
+    </div>
+    
+    <!-- System Status -->
+    <div class="test-section">
+        <h3>3. System Status</h3>
+        <button onclick="checkHealth()">Check Health</button>
+        <button onclick="checkEmailConfig()">Check Email Config</button>
+        <div id="status-response" class="response"></div>
+    </div>
+
+    <script>
+        async function sendOTP() {
+            const email = document.getElementById('email').value;
+            const responseDiv = document.getElementById('send-response');
+            
+            if (!email) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = 'Please enter an email address';
+                return;
+            }
+            
+            try {
+                responseDiv.className = 'response info';
+                responseDiv.innerHTML = 'Sending OTP...';
+                
+                const response = await fetch('/api/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    responseDiv.className = 'response success';
+                    responseDiv.innerHTML = `
+                        <strong>✅ Success!</strong><br>
+                        Message: ${data.message}<br>
+                        ${data.developmentCode ? `<strong>Development Code: ${data.developmentCode}</strong><br>` : ''}
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    
+                    // Auto-fill the verify section
+                    document.getElementById('verify-email').value = email;
+                    if (data.developmentCode) {
+                        document.getElementById('otp').value = data.developmentCode;
+                    }
+                } else {
+                    responseDiv.className = 'response error';
+                    responseDiv.innerHTML = `
+                        <strong>❌ Error!</strong><br>
+                        ${data.error}<br>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `<strong>❌ Network Error:</strong> ${error.message}`;
+            }
+        }
+        
+        async function verifyOTP() {
+            const email = document.getElementById('verify-email').value;
+            const otp = document.getElementById('otp').value;
+            const responseDiv = document.getElementById('verify-response');
+            
+            if (!email || !otp) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = 'Please enter both email and OTP';
+                return;
+            }
+            
+            try {
+                responseDiv.className = 'response info';
+                responseDiv.innerHTML = 'Verifying OTP...';
+                
+                const response = await fetch('/api/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, otp })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    responseDiv.className = 'response success';
+                    responseDiv.innerHTML = `
+                        <strong>✅ Success!</strong><br>
+                        Message: ${data.message}<br>
+                        Token: ${data.token ? data.token.substring(0, 50) + '...' : 'None'}<br>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    responseDiv.className = 'response error';
+                    responseDiv.innerHTML = `
+                        <strong>❌ Error!</strong><br>
+                        ${data.error}<br>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `<strong>❌ Network Error:</strong> ${error.message}`;
+            }
+        }
+        
+        async function checkHealth() {
+            const responseDiv = document.getElementById('status-response');
+            
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                
+                responseDiv.className = 'response success';
+                responseDiv.innerHTML = `
+                    <strong>✅ Health Check:</strong><br>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `<strong>❌ Health Check Failed:</strong> ${error.message}`;
+            }
+        }
+        
+        async function checkEmailConfig() {
+            const responseDiv = document.getElementById('status-response');
+            
+            try {
+                const response = await fetch('/email-config-test');
+                const data = await response.json();
+                
+                responseDiv.className = 'response info';
+                responseDiv.innerHTML = `
+                    <strong>📧 Email Config:</strong><br>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = `<strong>❌ Config Check Failed:</strong> ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

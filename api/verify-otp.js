@@ -1,7 +1,7 @@
-import jwt from "jsonwebtoken";
-import { otpStore } from "../utils/supabase-otp.js";
+const jwt = require("jsonwebtoken");
+const { verifyOTP, listStoredOTPs } = require('../utils/otp-store');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   try {
     // Enable CORS for client integration
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -42,10 +42,11 @@ export default async function handler(req, res) {
     }
 
     console.log(`🔄 Verifying OTP for: ${email}`);
+    listStoredOTPs(); // Debug: show all stored OTPs
 
     try {
-      // Verify OTP using Supabase (with fallback to memory)
-      const verificationResult = await otpStore.verifyOTP(email, otp);
+      // Verify OTP using shared store
+      const verificationResult = verifyOTP(email, otp);
 
       if (!verificationResult.success) {
         console.log(`❌ OTP verification failed for ${email}: ${verificationResult.error}`);
@@ -56,9 +57,6 @@ export default async function handler(req, res) {
       }
 
       console.log(`✅ OTP verified successfully for ${email}`);
-
-      // Update user record in database
-      await otpStore.upsertUser(email);
 
       // Generate JWT token
       const jwtSecret = process.env.JWT_SECRET || 'EasyOTPAuth-2025-SuperSecure-JWT-Secret-Change-In-Production';

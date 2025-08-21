@@ -72,17 +72,32 @@
     showMessage('info', 'You can request another code.');
   }
 
-  // (Optional) fake verify for demo; wire to your real /api/verify-otp later
+  // Real verify function that calls the API
   async function onVerify(e) {
     e?.preventDefault?.();
+    const email = (emailEl.value || '').trim();
     const code = (codeEl.value || '').trim();
+    
     if (!/^\d{6}$/.test(code)) {
       return showMessage('error', 'Please enter the 6-digit code.');
     }
-    showMessage('success', 'Success! You have been authenticated.');
-    setTimeout(() => {
-      window.location.href = '/landing.html';
-    }, 900);
+
+    const verifyBtn = document.getElementById('verify-btn');
+    if (verifyBtn) verifyBtn.disabled = true;
+    showMessage('info', 'Verifying code...');
+    
+    try {
+      const response = await postJSON('/api/verify-otp', { email, otp: code });
+      showMessage('success', 'Success! You have been authenticated.');
+      setTimeout(() => {
+        window.location.href = '/success.html';
+      }, 900);
+    } catch (err) {
+      console.error(err);
+      showMessage('error', err.message || 'Invalid code. Please try again.');
+    } finally {
+      if (verifyBtn) verifyBtn.disabled = false;
+    }
   }
 
   emailForm?.addEventListener('submit', onSend);
