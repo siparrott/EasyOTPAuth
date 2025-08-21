@@ -92,7 +92,14 @@ const generateCode = () => Math.floor(100000 + Math.random() * 900000).toString(
 
 // Serve homepage
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  try {
+    const indexPath = path.join(__dirname, 'public', 'index.html');
+    console.log('Serving homepage from:', indexPath);
+    res.sendFile(indexPath);
+  } catch (error) {
+    console.error('Error serving homepage:', error);
+    res.status(500).send('Error loading homepage');
+  }
 });
 
 // Serve login page
