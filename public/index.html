@@ -5,22 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EasyOTPAuth</title>
 
-  <!-- ✅ FIX: Correct Tailwind import -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- ✅ FIX: Production CSS instead of CDN -->
+  <link rel="stylesheet" href="/css/tailwind.css">
 
-  <!-- Optional: Custom Tailwind config -->
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#4f46e5',
-            secondary: '#ec4899',
-          },
-        },
-      },
-    };
-  </script>
+  <link rel="stylesheet" href="/css/theme.css">
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans">
     <!-- Navigation Bar -->
@@ -800,5 +788,6 @@
         }
     </script>
     <script src="js/cta-test.js"></script>
+    <script src="js/complete-test.js"></script>
 </body>
 </html>

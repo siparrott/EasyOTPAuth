@@ -1,33 +1,32 @@
 /**
  * CTA + Live Demo Connection Test for EasyOTPAuth
- * Paste this in VS Code and link to your index.html to test end-to-end
+ * Tests the actual demo functionality on the homepage
  */
 
 async function testCTADemoSystem() {
   console.log("🚀 Running CTA + Live Demo Connectivity Test");
 
-  // 1. Find CTA button
-  const ctaButton = document.getElementById("cta-button");
-  if (!ctaButton) {
-    console.error("❌ CTA button not found (ID: cta-button)");
-    return;
-  }
-  console.log("✅ CTA button found");
-
-  // 2. Find Email Input
-  const emailInput = document.getElementById("email-input");
+  // 1. Find demo email input (actual ID from homepage)
+  const emailInput = document.getElementById("demo-email");
   if (!emailInput) {
-    console.error("❌ Email input field not found (ID: email-input)");
+    console.error("❌ Demo email input not found (ID: demo-email)");
     return;
   }
-  console.log("✅ Email input field found");
+  console.log("✅ Demo email input found");
 
-  // 3. Simulate click
+  // 2. Find demo get code button (actual ID from homepage)
+  const getCodeButton = document.getElementById("demo-get-code");
+  if (!getCodeButton) {
+    console.error("❌ Demo get code button not found (ID: demo-get-code)");
+    return;
+  }
+  console.log("✅ Demo get code button found");
+
+  // 3. Test the demo functionality
   emailInput.value = "demo@easyotpauth.com"; // Set test email
-  ctaButton.click();
-  console.log("📤 Simulated CTA click");
+  console.log("� Set test email:", emailInput.value);
 
-  // 4. Hook into API Response
+  // 4. Test API connectivity
   try {
     const res = await fetch("/api/send-otp", {
       method: "POST",
@@ -36,14 +35,21 @@ async function testCTADemoSystem() {
     });
 
     const result = await res.json();
-    if (res.status === 200 && result.message === "OTP sent") {
+    if (res.status === 200 && result.success) {
       console.log("✅ Live Demo system connected and functional");
+      console.log("📊 API Response:", result);
+      if (result.developmentCode) {
+        console.log("🔑 Development OTP Code:", result.developmentCode);
+      }
     } else {
       console.error("❌ Live Demo response error:", result);
     }
   } catch (err) {
-    console.error("❌ Error sending OTP:", err.message);
+    console.error("❌ Error testing API:", err.message);
   }
 }
 
-document.addEventListener("DOMContentLoaded", testCTADemoSystem);
+// Only run the test if we're in development mode
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+  document.addEventListener("DOMContentLoaded", testCTADemoSystem);
+}
